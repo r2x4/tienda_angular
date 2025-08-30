@@ -3,11 +3,13 @@
   <!-- Container para contenido principal -->
   <div class="container mx-auto px-4 flex-grow">
     <main class="py-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-        <div *ngFor="let image of images" class="bg-white rounded-lg shadow-md overflow-hidden">
-          <img [src]="image.src" [alt]="image.alt" alt="" [title]="image.title" class="w-full h-48 object-cover">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div *ngFor="let image of images" class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105">
+          <div class="h-64 overflow-hidden">
+            <img [src]="image.src" [alt]="image.alt" alt="" [title]="image.title" class="w-full h-full object-contain">
+          </div>
           <div class="p-4">
-            <p class="text-gray-600 text-sm">{{ image.alt }}</p>
+            <p class="text-gray-600 text-base font-bold">{{ image.alt }}</p>
           </div>
         </div>
       </div>
