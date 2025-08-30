@@ -57,7 +57,7 @@ export class MainLayoutComponent implements OnInit {
       }
     }
 
-    this.showHomeButton = ['alimentos', 'calzado', 'ropa'].includes(currentPath);
+    this.showHomeButton = ['alimentos', 'calzado', 'ropa', 'suplementos'].includes(currentPath);
     if (currentTitle === 'Inicio') {
       this.pageTitle = 'SPORT-FIVE';
     } else {

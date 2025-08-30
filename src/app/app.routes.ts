@@ -34,7 +34,7 @@ export const routes: Routes = [
       {
         path: 'alimentos',
         loadComponent: () => import('./features/tienda/pages/alimentos/alimentos.component').then(m => m.AlimentosComponent),
-        data: { title: 'Alimentos' }
+        data: { title: 'Implementos' }
       },
       {
         path: 'calzado',
@@ -45,6 +45,11 @@ export const routes: Routes = [
         path: 'ropa',
         loadComponent: () => import('./features/tienda/pages/ropa/ropa.component').then(m => m.RopaComponent),
         data: { title: 'Ropa' }
+      },
+      {
+        path: 'suplementos',
+        loadComponent: () => import('./features/tienda/pages/suplementos/suplementos.component').then(m => m.SuplementosComponent),
+        data: { title: 'Suplementos' }
       },
     ]
   },
