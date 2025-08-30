@@ -1,0 +1,33 @@
+<div class="p-4 md:p-8 bg-gray-100 rounded-lg shadow-lg">
+  <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
+    Contáctanos
+  </h2>
+
+  <div class="text-center mb-8">
+    <p class="text-gray-600 text-lg">
+      ¿Tienes alguna pregunta o quieres saber más sobre nuestros productos?
+    </p>
+    <p class="text-gray-600 text-lg">
+      ¡Envíanos un mensaje por WhatsApp!
+    </p>
+  </div>
+
+  <div class="flex flex-col items-center space-y-4">
+    <a
+      [href]="whatsappLink"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105 shadow-md"
+    >
+      <i class="fab fa-whatsapp mr-2"></i>
+      Contactar por WhatsApp
+    </a>
+
+    <button
+      (click)="goBack()"
+      class="inline-block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+    >
+      Volver
+    </button>
+  </div>
+</div>
