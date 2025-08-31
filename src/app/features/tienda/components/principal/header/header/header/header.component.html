@@ -47,7 +47,7 @@
           <span class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-4 h-4 md:w-5 md:h-5 text-xs flex items-center justify-center">0</span>
           <span class="sr-only">Carrito de compras</span>
         </button>
-        <button class="hover:text-blue-400 transition-colors relative">
+        <button class="hover:text-blue-400 transition-colors relative" (click)="openAuthModal()">
           <i class="fas fa-user text-lg md:text-xl"></i>
           <span class="sr-only">Mi cuenta</span>
         </button>
@@ -56,3 +56,5 @@
     </div>
   </div>
 </header>
+
+<app-user-auth-modal *ngIf="isAuthModalOpen" (closeModal)="closeAuthModal()"></app-user-auth-modal>

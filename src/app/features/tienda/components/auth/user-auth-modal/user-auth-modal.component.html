@@ -1,0 +1,56 @@
+<div class="modal-overlay" *ngIf="true">
+  <div class="modal-content">
+    <button class="close-button" (click)="onClose()">&times;</button>
+
+    <div class="tabs">
+      <button [class.active]="showLogin" (click)="showLogin = true">Iniciar Sesión</button>
+      <button [class.active]="!showLogin" (click)="showLogin = false">Registrarse</button>
+    </div>
+
+    <!-- Login Form -->
+    <form *ngIf="showLogin" (ngSubmit)="onLogin()">
+      <h2>Iniciar Sesión</h2>
+      <div class="form-group">
+        <label for="loginEmail">Correo Electrónico</label>
+        <input type="email" id="loginEmail" [(ngModel)]="loginData.email" name="loginEmail" required>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" [(ngModel)]="loginData.password" name="loginPassword" required>
+      </div>
+      <button type="submit">Iniciar Sesión</button>
+    </form>
+
+    <!-- Register Form -->
+    <form *ngIf="!showLogin" (ngSubmit)="onRegister()">
+      <h2>Registrarse</h2>
+      <div class="form-scroll-area max-h-80 overflow-y-auto">
+        <div class="form-group">
+          <label for="registerName">Nombre</label>
+          <input type="text" id="registerName" [(ngModel)]="registerData.name" name="registerName" required>
+        </div>
+        <div class="form-group">
+          <label for="registerLastName">Apellido</label>
+          <input type="text" id="registerLastName" [(ngModel)]="registerData.lastName" name="registerLastName" required>
+        </div>
+        <div class="form-group">
+          <label for="registerEmail">Correo Electrónico</label>
+          <input type="email" id="registerEmail" [(ngModel)]="registerData.email" name="registerEmail" required>
+        </div>
+        <div class="form-group">
+          <label for="registerPhone">Teléfono</label>
+          <input type="tel" id="registerPhone" [(ngModel)]="registerData.phone" name="registerPhone">
+        </div>
+        <div class="form-group">
+          <label for="registerCity">Ciudad</label>
+          <input type="text" id="registerCity" [(ngModel)]="registerData.city" name="registerCity">
+        </div>
+        <div class="form-group">
+          <label for="registerPassword">Contraseña</label>
+          <input type="password" id="registerPassword" [(ngModel)]="registerData.password" name="registerPassword" required>
+        </div>
+      </div>
+      <button type="submit">Registrarse</button>
+    </form>
+  </div>
+</div>

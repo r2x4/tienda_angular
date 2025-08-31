@@ -1,1 +1,28 @@
-<p>Página de Ropa - Aquí se mostrarán los productos de ropa.</p>
+<div class="container mx-auto px-4 flex-grow">
+  <main class="py-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+      <div *ngFor="let product of products" class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105">
+        <div class="h-64 overflow-hidden">
+          <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-cover">
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg mb-2">{{ product.name }}</h3>
+          <p class="text-gray-600 text-base font-bold">${{ product.price.toFixed(2) }}</p>
+          <div class="flex space-x-2 mt-2">
+            <div *ngFor="let color of product.colors" class="w-5 h-5 rounded-full border border-gray-300"
+                 [ngClass]="{
+                   'bg-red-500': color === 'red',
+                   'bg-green-500': color === 'green',
+                   'bg-black': color === 'black',
+                   'bg-white': color === 'white',
+                   'bg-blue-500': color === 'blue'
+                 }"></div>
+          </div>
+          <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors duration-300">
+            <i class="fas fa-shopping-cart mr-2"></i> Añadir al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
