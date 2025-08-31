@@ -51,6 +51,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/tienda/pages/suplementos/suplementos.component').then(m => m.SuplementosComponent),
         data: { title: 'Suplementos' }
       },
+      {
+        path: 'cart',
+        loadComponent: () => import('./features/tienda/pages/cart-page/cart-page').then(m => m.CartPageComponent),
+        data: { title: 'Carrito' }
+      },
     ]
   },
   {

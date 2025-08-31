@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../interfaces/product.interface';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-ropa',
@@ -9,6 +10,8 @@ import { Product } from '../../interfaces/product.interface';
   templateUrl: './ropa.component.html',
 })
 export class RopaComponent {
+  private cartService = inject(CartService);
+
   products: Product[] = [
     {
       id: 1,
@@ -46,4 +49,9 @@ export class RopaComponent {
       colors: ['black', 'green']
     }
   ];
+
+  addToCart(product: Product) {
+    this.cartService.addToCart(product);
+    alert(`${product.name} ha sido añadido al carrito.`);
+  }
 }

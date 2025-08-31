@@ -4,4 +4,5 @@ export interface Product {
   price: number;
   imageUrl: string;
   colors: string[];
+  quantity?: number; // Añadido para el carrito
 }
