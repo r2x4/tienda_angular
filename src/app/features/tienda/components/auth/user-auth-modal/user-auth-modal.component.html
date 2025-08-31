@@ -1,6 +1,10 @@
-<div class="modal-overlay" *ngIf="true">
-  <div class="modal-content">
-    <button class="close-icon" (click)="onClose()">&times;</button>
+<div class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" *ngIf="true">
+  <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 relative">
+    <!-- X fuera del contenido, posicionada absolutamente -->
+    <button class="absolute -top-0.5 -right-0.5 z-20 w-8 h-8 flex items-center justify-center bg-transparent text-dark-300 hover:bg-transparent font-bold text-xl"
+            (click)="onClose()">
+      &times;
+    </button>
 
     <div class="tabs">
       <button [class.active]="showLogin" (click)="showLogin = true">Iniciar Sesión</button>
