@@ -1,6 +1,6 @@
 <div class="modal-overlay" *ngIf="true">
   <div class="modal-content">
-    <button class="close-button" (click)="onClose()">&times;</button>
+    <button class="close-icon" (click)="onClose()">&times;</button>
 
     <div class="tabs">
       <button [class.active]="showLogin" (click)="showLogin = true">Iniciar Sesión</button>
@@ -9,7 +9,6 @@
 
     <!-- Login Form -->
     <form *ngIf="showLogin" (ngSubmit)="onLogin()">
-      <h2>Iniciar Sesión</h2>
       <div class="form-group">
         <label for="loginEmail">Correo Electrónico</label>
         <input type="email" id="loginEmail" [(ngModel)]="loginData.email" name="loginEmail" required>
@@ -23,7 +22,6 @@
 
     <!-- Register Form -->
     <form *ngIf="!showLogin" (ngSubmit)="onRegister()">
-      <h2>Registrarse</h2>
       <div class="form-scroll-area max-h-80 overflow-y-auto">
         <div class="form-group">
           <label for="registerName">Nombre</label>
