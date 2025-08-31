@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../interfaces/product.interface';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-alimentos',
@@ -9,6 +10,8 @@ import { Product } from '../../interfaces/product.interface';
   templateUrl: './alimentos.component.html',
 })
 export class AlimentosComponent {
+  private cartService = inject(CartService);
+
   products: Product[] = [
     {
       id: 1,
@@ -39,4 +42,9 @@ export class AlimentosComponent {
       colors: ['black']
     }
   ];
+
+  addToCart(product: Product) {
+    this.cartService.addToCart(product);
+    alert(`${product.name} ha sido añadido al carrito.`);
+  }
 }
