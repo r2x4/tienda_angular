@@ -9,10 +9,7 @@
         "*.ts"
       ],
       "parserOptions": {
-        "project": [
-          "tsconfig.json"
-        ],
-        "createDefaultProgram": true
+        "projectService": true
       },
       "extends": [
         "plugin:@angular-eslint/recommended",

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import HeaderComponent from '../../../features/tienda/components/principal/header/header/header/header.component';
@@ -22,10 +22,11 @@ import FooterComponent from '../../../features/tienda/components/principal/foote
   `]
 })
 export class MainLayoutComponent implements OnInit {
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+
   pageTitle: string = 'SPORT-FIVE';
   showHomeButton: boolean = false;
-
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit() {
     // Set initial title based on current route snapshot

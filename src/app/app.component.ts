@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavigationService } from './core/services/navigation.service';
 
@@ -11,10 +11,12 @@ import { NavigationService } from './core/services/navigation.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  private navigationService = inject(NavigationService);
+
   title = 'tienda_angular';
   activeComponent: any;
 
-  constructor(private navigationService: NavigationService) {
+  constructor() {
     this.activeComponent = this.navigationService.activeComponent;
   }
 }

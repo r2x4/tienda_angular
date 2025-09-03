@@ -3,7 +3,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
       <div *ngFor="let product of products" class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105">
         <div class="h-64 overflow-hidden">
-          <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-cover">
+          <img [src]="product.imageUrl" [alt]="product.name" [title]="product.name" class="w-full h-full object-cover">
         </div>
         <div class="p-4">
           <h3 class="font-bold text-lg mb-2">{{ product.name }}</h3>

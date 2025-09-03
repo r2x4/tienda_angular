@@ -4,7 +4,7 @@
   <ng-container *ngIf="cartItems().length > 0; else emptyCart">
     <div class="cart-items-list">
       <div *ngFor="let item of cartItems()" class="cart-item">
-        <img [src]="item.imageUrl" [alt]="item.name" class="item-image">
+        <img [src]="item.imageUrl" [alt]="item.name" [title]="item.name" class="item-image">
         <div class="item-details">
           <p class="item-name">{{ item.name }}</p>
           <p *ngIf="item.selectedColor" class="item-color">Color: {{ item.selectedColor }}</p>
