@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../interfaces/product.interface';
 import { CartService } from '../../services/cart.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-implementos',
@@ -9,39 +10,15 @@ import { CartService } from '../../services/cart.service';
   imports: [CommonModule],
   templateUrl: './implementos.component.html',
 })
-export class ImplementosComponent {
+export class ImplementosComponent implements OnInit {
   private cartService = inject(CartService);
+  private productService = inject(ProductService);
 
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Balón de Baloncesto',
-      price: 29.99,
-      imageUrl: 'assets/implementos_Balon_Baloncesto.jpg',
-      colors: []
-    },
-    {
-      id: 2,
-      name: 'Balón de Fútbol',
-      price: 24.99,
-      imageUrl: 'assets/implementos_Balon_Futbol.jpg',
-      colors: []
-    },
-    {
-      id: 3,
-      name: 'Pera de Boxeo',
-      price: 34.99,
-      imageUrl: 'assets/implementos_Pera_Boxeo.jpg',
-      colors: []
-    },
-    {
-      id: 4,
-      name: 'Saco de Boxeo',
-      price: 89.99,
-      imageUrl: 'assets/implementos_Saco_Boxeo.jpg',
-      colors: []
-    }
-  ];
+  products: Product[] = [];
+
+  ngOnInit(): void {
+    this.products = this.productService.getImplementosProducts();
+  }
 
   addToCart(product: Product) {
     this.cartService.addToCart(product);
