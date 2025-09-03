@@ -9,16 +9,24 @@
           <h3 class="font-bold text-lg mb-2">{{ product.name }}</h3>
           <p class="text-gray-600 text-base font-bold">${{ product.price.toFixed(2) }}</p>
           <div class="flex space-x-2 mt-2">
-            <div *ngFor="let color of product.colors" class="w-5 h-5 rounded-full border border-gray-300"
+            <div *ngFor="let color of product.colors" 
+                 (click)="selectColor(product, color)"
+                 class="w-6 h-6 rounded-full border-2 cursor-pointer transition-all duration-300"
                  [ngClass]="{
                    'bg-red-500': color === 'red',
                    'bg-green-500': color === 'green',
                    'bg-black': color === 'black',
                    'bg-white': color === 'white',
-                   'bg-blue-500': color === 'blue'
-                 }"></div>
+                   'bg-blue-500': color === 'blue',
+                   'border-blue-600 scale-110': product.selectedColor === color,
+                   'border-gray-300': product.selectedColor !== color
+                 }"
+                 [title]="color"></div>
           </div>
-          <button (click)="addToCart(product)" class="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors duration-300">
+          <p class="text-sm mt-2 text-gray-600">
+            Color seleccionado: {{ product.selectedColor || 'Ninguno' }}
+          </p>
+          <button type="button" (click)="addToCart(product)" class="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors duration-300">
             <i class="fas fa-shopping-cart mr-2"></i> Añadir al carrito
           </button>
         </div>

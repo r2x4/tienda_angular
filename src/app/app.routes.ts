@@ -32,8 +32,8 @@ export const routes: Routes = [
         data: { title: 'Nosotros' }
       },
       {
-        path: 'alimentos',
-        loadComponent: () => import('./features/tienda/pages/alimentos/alimentos.component').then(m => m.AlimentosComponent),
+        path: 'implementos',
+        loadComponent: () => import('./features/tienda/pages/implementos/implementos.component').then(m => m.ImplementosComponent),
         data: { title: 'Implementos' }
       },
       {

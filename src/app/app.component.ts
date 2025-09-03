@@ -10,7 +10,7 @@ import { NavigationService } from './core/services/navigation.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class App {
+export class AppComponent {
   title = 'tienda_angular';
   activeComponent: any;
 

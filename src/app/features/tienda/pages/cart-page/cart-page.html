@@ -7,17 +7,18 @@
         <img [src]="item.imageUrl" [alt]="item.name" class="item-image">
         <div class="item-details">
           <p class="item-name">{{ item.name }}</p>
+          <p *ngIf="item.selectedColor" class="item-color">Color: {{ item.selectedColor }}</p>
           <p class="item-price">{{ item.price | currency }} x {{ item.quantity }}</p>
         </div>
-        <button (click)="removeFromCart(item.id)" class="remove-button">Eliminar</button>
+        <button type="button" (click)="removeFromCart(item.id)" class="remove-button">Eliminar</button>
       </div>
     </div>
 
     <div class="cart-summary">
       <h3>Total: {{ total() | currency }}</h3>
       <div class="cart-actions">
-        <button (click)="checkout()" class="checkout-button">Proceder al Pago (Simulación)</button>
-        <button (click)="clearCart()" class="clear-button">Vaciar Carrito</button>
+        <button type="button" (click)="checkout()" class="checkout-button">Proceder al Pago (Simulación)</button>
+        <button type="button" (click)="clearCart()" class="clear-button">Vaciar Carrito</button>
       </div>
     </div>
   </ng-container>
