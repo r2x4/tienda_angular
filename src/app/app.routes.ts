@@ -8,6 +8,11 @@ export const routes: Routes = [
     data: { title: 'Admin Login' }
   },
   {
+    path: 'admin/services',
+    loadComponent: () => import('./features/admin/service-crud/service-crud').then(m => m.ServiceCrudComponent),
+    data: { title: 'Admin Services' }
+  },
+  {
     path: '',
     redirectTo: 'inicial',
     pathMatch: 'full'

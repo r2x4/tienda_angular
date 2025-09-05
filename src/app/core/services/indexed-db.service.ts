@@ -19,7 +19,7 @@ export interface User {
 })
 export class IndexedDbService {
   private dbName = 'TiendaDB';
-  private dbVersion = 2; // Incremented version
+  private dbVersion = 3; // Incremented version
   private serviceStoreName = 'services';
   private userStoreName = 'users';
   private db: IDBDatabase | null = null;
@@ -46,7 +46,7 @@ export class IndexedDbService {
           const userStore = db.createObjectStore(this.userStoreName, { keyPath: 'id', autoIncrement: true });
           // Add a default admin user if the store is new
           userStore.transaction.oncomplete = () => {
-            const userTransaction = this.db!.transaction(this.userStoreName, 'readwrite');
+            const userTransaction = db.transaction(this.userStoreName, 'readwrite');
             const userObjectStore = userTransaction.objectStore(this.userStoreName);
             userObjectStore.add({ username: 'admin', password: 'password', isAdmin: true });
           };

@@ -1,0 +1,104 @@
+
+:host {
+  position: relative; /* For pseudo-element positioning */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden; /* To contain the pseudo-element */
+}
+
+:host::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://plus.unsplash.com/premium_photo-1661963212517-830bbb7d76fc?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVjaG5vbG9neXxlbnwwfHwwfHx8MA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4; /* 60% transparency */
+  z-index: -1; /* Behind the content */
+}
+
+.login-container {
+  position: relative; /* For overlay positioning */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  background-image: url('https://plus.unsplash.com/premium_photo-1661963212517-830bbb7d76fc?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVjaG5vbG9neXxlbnwwfHwwfHx8MA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden; /* To keep pseudo-element within border-radius */
+  z-index: 1;
+}
+
+/* Overlay */
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+  border-radius: 8px;
+  z-index: -1;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  color: #ffffff; /* White text */
+  font-size: 2.2rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #eeeeee; /* Lighter white text */
+  font-size: 1.1rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 1.1rem;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: #ffcdd2; /* Lighter red for dark background */
+  margin-top: 1rem;
+  background-color: rgba(255, 0, 0, 0.2);
+  padding: 0.5rem;
+  border-radius: 4px;
+}
