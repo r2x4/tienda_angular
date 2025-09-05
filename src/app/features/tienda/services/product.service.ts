@@ -14,7 +14,7 @@ export class ProductService {
       imageUrl: 'assets/suplementos_Aminoacidos.jpg',
       colors: ['blue', 'white'],
       category: 'suplementos',
-      stock: 20
+      stock: 3
     },
     {
       id: 2,
@@ -23,7 +23,7 @@ export class ProductService {
       imageUrl: 'assets/suplementos_Creatina.jpg',
       colors: ['white', 'black'],
       category: 'suplementos',
-      stock: 20
+      stock: 3
     },
     {
       id: 3,
@@ -32,7 +32,7 @@ export class ProductService {
       imageUrl: 'assets/suplementos_Proteina_Whey.jpg',
       colors: ['chocolate', 'vanilla'],
       category: 'suplementos',
-      stock: 20
+      stock: 3
     },
     {
       id: 4,
@@ -41,7 +41,7 @@ export class ProductService {
       imageUrl: 'assets/suplementos_Suplementos.jpg',
       colors: ['gray', 'orange'],
       category: 'suplementos',
-      stock: 20
+      stock: 3
     }
   ];
 
@@ -53,7 +53,7 @@ export class ProductService {
       imageUrl: 'assets/ropa_Buzo1.jpg',
       colors: ['black', 'gray'],
       category: 'ropa',
-      stock: 20
+      stock: 3
     },
     {
       id: 102,
@@ -62,7 +62,7 @@ export class ProductService {
       imageUrl: 'assets/ropa_Buzo2.jpg',
       colors: ['blue', 'white'],
       category: 'ropa',
-      stock: 20
+      stock: 3
     },
     {
       id: 103,
@@ -71,7 +71,7 @@ export class ProductService {
       imageUrl: 'assets/ropa_Pantaloneta1.jpg',
       colors: ['black', 'red'],
       category: 'ropa',
-      stock: 20
+      stock: 3
     },
     {
       id: 104,
@@ -80,7 +80,7 @@ export class ProductService {
       imageUrl: 'assets/ropa_ropaDeportiva.jpg',
       colors: ['gray', 'white'],
       category: 'ropa',
-      stock: 20
+      stock: 3
     },
     {
       id: 105,
@@ -89,7 +89,7 @@ export class ProductService {
       imageUrl: 'assets/ropa_Sudadera1.jpg',
       colors: ['black', 'green'],
       category: 'ropa',
-      stock: 20
+      stock: 3
     }
   ];
 
@@ -101,7 +101,7 @@ export class ProductService {
       imageUrl: 'assets/calzado_TennisAdidas1.jpg',
       colors: ['black', 'white', 'blue'],
       category: 'calzado',
-      stock: 20
+      stock: 3
     },
     {
       id: 202,
@@ -110,7 +110,7 @@ export class ProductService {
       imageUrl: 'assets/calzado_TennisDama1.jpg',
       colors: ['white', 'red'],
       category: 'calzado',
-      stock: 20
+      stock: 3
     },
     {
       id: 203,
@@ -119,7 +119,7 @@ export class ProductService {
       imageUrl: 'assets/calzado_TennisDama2.jpg',
       colors: ['black', 'green'],
       category: 'calzado',
-      stock: 20
+      stock: 3
     },
     {
       id: 204,
@@ -128,7 +128,7 @@ export class ProductService {
       imageUrl: 'assets/calzado_tennis1.jpg',
       colors: ['white'],
       category: 'calzado',
-      stock: 20
+      stock: 3
     },
     {
       id: 205,
@@ -137,7 +137,7 @@ export class ProductService {
       imageUrl: 'assets/calzado_tennis2.jpg',
       colors: ['blue', 'white'],
       category: 'calzado',
-      stock: 20
+      stock: 3
     },
     {
       id: 206,
@@ -146,7 +146,7 @@ export class ProductService {
       imageUrl: 'assets/calzado_tennis3.jpg',
       colors: ['black', 'red'],
       category: 'calzado',
-      stock: 20
+      stock: 3
     }
   ];
 
@@ -158,7 +158,7 @@ export class ProductService {
       imageUrl: 'assets/implementos_Balon_Baloncesto.jpg',
       colors: [],
       category: 'implementos',
-      stock: 20
+      stock: 3
     },
     {
       id: 302,
@@ -167,7 +167,7 @@ export class ProductService {
       imageUrl: 'assets/implementos_Balon_Futbol.jpg',
       colors: [],
       category: 'implementos',
-      stock: 20
+      stock: 3
     },
     {
       id: 303,
@@ -176,7 +176,7 @@ export class ProductService {
       imageUrl: 'assets/implementos_Pera_Boxeo.jpg',
       colors: [],
       category: 'implementos',
-      stock: 20
+      stock: 3
     },
     {
       id: 304,
@@ -185,7 +185,7 @@ export class ProductService {
       imageUrl: 'assets/implementos_Saco_Boxeo.jpg',
       colors: [],
       category: 'implementos',
-      stock: 20
+      stock: 3
     }
   ];
 

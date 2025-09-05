@@ -59,12 +59,29 @@ export class IndexedDbService {
 
       request.onsuccess = (event) => {
         this.db = (event.target as IDBOpenDBRequest).result;
+
+        this.db.onversionchange = () => {
+          console.warn('IndexedDB version change detected. Closing database.');
+          this.db?.close();
+          alert('La base de datos necesita ser actualizada. Por favor, recarga la página.');
+        };
+
+        this.db.onclose = () => {
+          console.warn('IndexedDB connection closed unexpectedly.');
+          this.db = null; // Clear the reference to the closed DB
+        };
+
         resolve();
       };
 
       request.onerror = (event) => {
         console.error('IndexedDB error:', (event.target as IDBOpenDBRequest).error);
         reject((event.target as IDBOpenDBRequest).error);
+      };
+
+      request.onblocked = (event) => {
+        console.warn('IndexedDB open request blocked:', (event.target as IDBOpenDBRequest).error);
+        alert('La base de datos está siendo utilizada en otra pestaña o ventana. Por favor, cierra las otras instancias e inténtalo de nuevo.');
       };
     });
   }
