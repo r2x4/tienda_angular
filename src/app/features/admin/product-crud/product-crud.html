@@ -1,0 +1,78 @@
+<div class="container">
+  <h1>Gestión de Productos</h1>
+
+  <div class="grid-container">
+    <!-- Product Editor Card -->
+    <div class="card">
+      <h2>{{ currentProduct().id ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h2>
+      <form (ngSubmit)="currentProduct().id ? updateProduct() : addProduct()">
+        <div class="form-group">
+          <label for="name">Nombre del Producto:</label>
+          <input type="text" id="name" name="name" [(ngModel)]="currentProduct().name" required>
+        </div>
+        <div class="form-group">
+          <label for="price">Precio:</label>
+          <input type="number" id="price" name="price" [(ngModel)]="currentProduct().price" required>
+        </div>
+        <div class="form-group">
+          <label for="imageUrl">URL de la Imagen:</label>
+          <input type="text" id="imageUrl" name="imageUrl" [(ngModel)]="currentProduct().imageUrl" required>
+        </div>
+        <div class="form-group">
+          <label for="colors">Colores (separados por comas):</label>
+          <input type="text" id="colors" name="colors" [(ngModel)]="currentProduct().colorsString">
+        </div>
+        <div class="form-group">
+          <label for="category">Categoría:</label>
+          <select id="category" name="category" [(ngModel)]="currentProduct().category" required>
+            <option value="">Selecciona una categoría</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat | titlecase }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="stock">Stock:</label>
+          <input type="number" id="stock" name="stock" [(ngModel)]="currentProduct().stock" required>
+        </div>
+        <div class="button-group">
+          <button type="submit" class="btn-primary">{{ currentProduct().id ? 'Actualizar' : 'Guardar Nuevo' }}</button>
+          <button type="button" (click)="clearForm()" class="btn-secondary">Limpiar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Products List -->
+    <div class="list-container">
+      <h2>Lista de Productos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Colores</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of products()">
+            <td><img [src]="product.imageUrl" alt="{{ product.name }}" width="50" height="50"></td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price | currency:'USD' }}</td>
+            <td>{{ product.colors.join(', ') }}</td>
+            <td>{{ product.category | titlecase }}</td>
+            <td>{{ product.stock }}</td>
+            <td>
+              <button (click)="editProduct(product)" class="btn-edit">Editar</button>
+              <button (click)="deleteProduct(product.id)" class="btn-delete">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="products().length === 0">
+            <td colspan="7" class="text-center">No hay productos para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

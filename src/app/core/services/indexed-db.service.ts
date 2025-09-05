@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Product } from '../../features/tienda/interfaces/product.interface';
 
 interface ServiceItem {
   id?: number;
@@ -19,9 +20,10 @@ export interface User {
 })
 export class IndexedDbService {
   private dbName = 'TiendaDB';
-  private dbVersion = 3; // Incremented version
+  private dbVersion = 6; // Incremented version
   private serviceStoreName = 'services';
   private userStoreName = 'users';
+  private productStoreName = 'products'; // New store for products
   private db: IDBDatabase | null = null;
 
   constructor() {
@@ -44,12 +46,14 @@ export class IndexedDbService {
         }
         if (!db.objectStoreNames.contains(this.userStoreName)) {
           const userStore = db.createObjectStore(this.userStoreName, { keyPath: 'id', autoIncrement: true });
-          // Add a default admin user if the store is new
           userStore.transaction.oncomplete = () => {
             const userTransaction = db.transaction(this.userStoreName, 'readwrite');
             const userObjectStore = userTransaction.objectStore(this.userStoreName);
             userObjectStore.add({ username: 'admin', password: 'password', isAdmin: true });
           };
+        }
+        if (!db.objectStoreNames.contains(this.productStoreName)) {
+          db.createObjectStore(this.productStoreName, { keyPath: 'id', autoIncrement: true });
         }
       };
 
@@ -83,7 +87,6 @@ export class IndexedDbService {
         resolve(service);
       };
       request.onerror = (event) => {
-        console.error('Error adding service:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });
@@ -97,7 +100,6 @@ export class IndexedDbService {
         resolve((event.target as IDBRequest).result);
       };
       request.onerror = (event) => {
-        console.error('Error getting services:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });
@@ -111,7 +113,6 @@ export class IndexedDbService {
         resolve(service);
       };
       request.onerror = (event) => {
-        console.error('Error updating service:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });
@@ -125,7 +126,60 @@ export class IndexedDbService {
         resolve();
       };
       request.onerror = (event) => {
-        console.error('Error deleting service:', (event.target as IDBRequest).error);
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  }
+
+  // Product methods
+  async addProduct(product: Product): Promise<Product> {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const request = this.getObjectStore(this.productStoreName, 'readwrite').add(product);
+      request.onsuccess = (event) => {
+        product.id = (event.target as IDBRequest).result as number;
+        resolve(product);
+      };
+      request.onerror = (event) => {
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  }
+
+  async getProducts(): Promise<Product[]> {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const request = this.getObjectStore(this.productStoreName, 'readonly').getAll();
+      request.onsuccess = (event) => {
+        resolve((event.target as IDBRequest).result);
+      };
+      request.onerror = (event) => {
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  }
+
+  async updateProduct(product: Product): Promise<Product> {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const request = this.getObjectStore(this.productStoreName, 'readwrite').put(product);
+      request.onsuccess = () => {
+        resolve(product);
+      };
+      request.onerror = (event) => {
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const request = this.getObjectStore(this.productStoreName, 'readwrite').delete(id);
+      request.onsuccess = () => {
+        resolve();
+      };
+      request.onerror = (event) => {
         reject((event.target as IDBRequest).error);
       };
     });
@@ -141,7 +195,6 @@ export class IndexedDbService {
         resolve(user);
       };
       request.onerror = (event) => {
-        console.error('Error adding user:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });
@@ -169,7 +222,6 @@ export class IndexedDbService {
       };
 
       request.onerror = (event) => {
-        console.error('Error getting user by username:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });
@@ -183,7 +235,6 @@ export class IndexedDbService {
         resolve(user);
       };
       request.onerror = (event) => {
-        console.error('Error updating user:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });
@@ -197,7 +248,6 @@ export class IndexedDbService {
         resolve();
       };
       request.onerror = (event) => {
-        console.error('Error deleting user:', (event.target as IDBRequest).error);
         reject((event.target as IDBRequest).error);
       };
     });

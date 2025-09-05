@@ -1,0 +1,13 @@
+<div class="admin-layout">
+  <header class="admin-header">
+    <h1>Panel de Administración</h1>
+    <nav>
+      <a routerLink="/admin/services" routerLinkActive="active">Servicios</a>
+      <a routerLink="/admin/products" routerLinkActive="active">Productos</a>
+    </nav>
+    <button (click)="logout()" class="logout-btn">Salir</button>
+  </header>
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

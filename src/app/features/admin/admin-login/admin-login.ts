@@ -23,7 +23,9 @@ export class AdminLoginComponent {
     this.errorMessage.set(''); // Clear previous errors
     const loggedIn = await this.authService.loginAdmin(this.username(), this.password());
     if (loggedIn) {
-      this.router.navigate(['/admin/services']); // Redirect to admin services CRUD
+      setTimeout(() => {
+        this.router.navigate(['/admin/services']); // Redirect to admin services CRUD
+      }, 50); // Small delay to allow signal to propagate
     } else {
       this.errorMessage.set('Nombre de usuario o contraseña incorrectos.');
     }

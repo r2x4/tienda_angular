@@ -1,1 +1,57 @@
-<p>service-crud works!</p>
+<div class="container">
+  <h1>Gestión de Servicios</h1>
+
+  <div class="grid-container">
+    <!-- Service Editor Card -->
+    <div class="card">
+      <h2>{{ currentService().id ? 'Editar Servicio' : 'Agregar Nuevo Servicio' }}</h2>
+      <form (ngSubmit)="currentService().id ? updateService() : addService()">
+        <div class="form-group">
+          <label for="name">Nombre del Servicio:</label>
+          <input type="text" id="name" name="name" [(ngModel)]="currentService().name" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Descripción:</label>
+          <textarea id="description" name="description" [(ngModel)]="currentService().description" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="price">Precio:</label>
+          <input type="number" id="price" name="price" [(ngModel)]="currentService().price" required>
+        </div>
+        <div class="button-group">
+          <button type="submit" class="btn-primary">{{ currentService().id ? 'Actualizar' : 'Guardar Nuevo' }}</button>
+          <button type="button" (click)="clearForm()" class="btn-secondary">Limpiar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Services List -->
+    <div class="list-container">
+      <h2>Lista de Servicios</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let service of services()">
+            <td>{{ service.name }}</td>
+            <td>{{ service.description }}</td>
+            <td>{{ service.price | currency:'USD' }}</td>
+            <td>
+              <button (click)="editService(service)" class="btn-edit">Editar</button>
+              <button (click)="deleteService(service.id)" class="btn-delete">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="services().length === 0">
+            <td colspan="4" class="text-center">No hay servicios para mostrar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

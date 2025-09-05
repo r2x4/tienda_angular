@@ -1,5 +1,10 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/components/main-layout/main-layout.component';
+import { AdminLayoutComponent } from './core/components/admin-layout/admin-layout';
+import { inject } from '@angular/core';
+import { AuthService } from './core/services/auth.service';
+import { toObservable } from '@angular/core/rxjs-interop'; // New import
+import { take } from 'rxjs/operators'; // New import
 
 export const routes: Routes = [
   {
@@ -8,9 +13,26 @@ export const routes: Routes = [
     data: { title: 'Admin Login' }
   },
   {
-    path: 'admin/services',
-    loadComponent: () => import('./features/admin/service-crud/service-crud').then(m => m.ServiceCrudComponent),
-    data: { title: 'Admin Services' }
+    path: 'admin', // Parent route for admin section
+    component: AdminLayoutComponent, // Use the new admin layout
+    canActivate: [() => toObservable(inject(AuthService).isAdminAuthenticated).pipe(take(1))], // Protect admin routes
+    children: [
+      {
+        path: 'services',
+        loadComponent: () => import('./features/admin/service-crud/service-crud').then(m => m.ServiceCrudComponent),
+        data: { title: 'Admin Services' }
+      },
+      {
+        path: 'products',
+        loadComponent: () => import('./features/admin/product-crud/product-crud').then(m => m.ProductCrudComponent),
+        data: { title: 'Admin Products' }
+      },
+      {
+        path: '', // Default child route for /admin
+        redirectTo: 'services',
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: '',
