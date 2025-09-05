@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../../features/tienda/interfaces/product.interface';
+import { Sale } from '../../features/tienda/interfaces/sale.interface';
 
 interface ServiceItem {
   id?: number;
@@ -20,10 +21,11 @@ export interface User {
 })
 export class IndexedDbService {
   private dbName = 'TiendaDB';
-  private dbVersion = 6; // Incremented version
+  private dbVersion = 7; // Incremented version for sales store
   private serviceStoreName = 'services';
   private userStoreName = 'users';
-  private productStoreName = 'products'; // New store for products
+  private productStoreName = 'products';
+  private salesStoreName = 'sales'; // New store for sales
   private db: IDBDatabase | null = null;
 
   constructor() {
@@ -54,6 +56,9 @@ export class IndexedDbService {
         }
         if (!db.objectStoreNames.contains(this.productStoreName)) {
           db.createObjectStore(this.productStoreName, { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains(this.salesStoreName)) {
+          db.createObjectStore(this.salesStoreName, { keyPath: 'id', autoIncrement: true });
         }
       };
 
@@ -202,6 +207,34 @@ export class IndexedDbService {
     });
   }
 
+  // Sales methods
+  async addSale(sale: Sale): Promise<Sale> {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const request = this.getObjectStore(this.salesStoreName, 'readwrite').add(sale);
+      request.onsuccess = (event) => {
+        sale.id = (event.target as IDBRequest).result as number;
+        resolve(sale);
+      };
+      request.onerror = (event) => {
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  }
+
+  async getSales(): Promise<Sale[]> {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const request = this.getObjectStore(this.salesStoreName, 'readonly').getAll();
+      request.onsuccess = (event) => {
+        resolve((event.target as IDBRequest).result);
+      };
+      request.onerror = (event) => {
+        reject((event.target as IDBRequest).error);
+      };
+    });
+  }
+
   // User methods
   async addUser(user: User): Promise<User> {
     await this.openDB();
@@ -270,3 +303,4 @@ export class IndexedDbService {
     });
   }
 }
+

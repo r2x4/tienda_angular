@@ -2,6 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { Product } from '../interfaces/product.interface';
 import { IndexedDbService } from '../../../core/services/indexed-db.service';
 import { ProductService } from './product.service';
+import { Sale, SaleItem } from '../interfaces/sale.interface'; // Import Sale and SaleItem
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,8 @@ export class CartService {
 
   async processPurchase(): Promise<void> {
     const currentCartItems = this.cartItems();
+    let purchaseTotal = 0;
+    const saleItems: SaleItem[] = [];
 
     for (const cartItem of currentCartItems) {
       const allProducts = await this.indexedDbService.getProducts();
@@ -81,9 +84,26 @@ export class CartService {
         // Ensure stock doesn't go below zero
         productInDb.stock = Math.max(0, productInDb.stock - (cartItem.quantity || 1));
         await this.indexedDbService.updateProduct(productInDb);
+
+        // Prepare sale item
+        saleItems.push({
+          productId: productInDb.id,
+          name: productInDb.name,
+          price: productInDb.price,
+          quantity: cartItem.quantity || 1
+        });
+        purchaseTotal += productInDb.price * (cartItem.quantity || 1);
       }
     }
+
+    // Record the sale
+    const newSale: Sale = {
+      date: Date.now(), // Current timestamp
+      items: saleItems,
+      total: purchaseTotal
+    };
+    await this.indexedDbService.addSale(newSale);
+
     this.clearCart();
   }
 }
-
