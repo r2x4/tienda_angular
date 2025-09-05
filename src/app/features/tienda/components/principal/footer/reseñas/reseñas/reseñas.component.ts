@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-reseñas',
+  selector: 'app-resenas',
   standalone: true,
   imports: [],
   templateUrl: './reseñas.component.html',

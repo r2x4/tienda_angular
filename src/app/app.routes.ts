@@ -3,6 +3,11 @@ import { MainLayoutComponent } from './core/components/main-layout/main-layout.c
 
 export const routes: Routes = [
   {
+    path: 'admin/login',
+    loadComponent: () => import('./features/admin/admin-login/admin-login').then(m => m.AdminLoginComponent),
+    data: { title: 'Admin Login' }
+  },
+  {
     path: '',
     redirectTo: 'inicial',
     pathMatch: 'full'
