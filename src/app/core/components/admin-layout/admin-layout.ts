@@ -51,4 +51,36 @@ export class AdminLayoutComponent {
       document.body.removeChild(link);
     }
   }
+
+  async exportInventoryToCsv(): Promise<void> {
+    const products = await this.indexedDbService.getProducts();
+
+    if (products.length === 0) {
+      alert('No hay productos en el inventario para exportar.');
+      return;
+    }
+
+    // Create CSV header for products
+    const headers = ['ID', 'Nombre', 'Precio', 'Stock', 'Categoría', 'Colores', 'URL Imagen'];
+    let csv = headers.join(',') + '\n';
+
+    // Add product data
+    products.forEach(product => {
+      const colors = product.colors.join('; ');
+      csv += `${product.id},"${product.name}",${product.price},${product.stock},"${product.category}","${colors}","${product.imageUrl}"\n`;
+    });
+
+    // Create a Blob and download the file
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'inventario.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
 }
