@@ -25,10 +25,11 @@ export class CartPageComponent {
   }
 
   // Simula el proceso de pago
-  public checkout(): void {
+  public async checkout(): Promise<void> {
     if (this.cartItems().length > 0) {
+      await this.cartService.processPurchase(); // Call the new method
       alert('¡Gracias por tu compra! (Esto es una simulación)');
-      this.cartService.clearCart();
+      // this.cartService.clearCart(); // clearCart is now handled by processPurchase
     } else {
       alert('Tu carrito está vacío.');
     }

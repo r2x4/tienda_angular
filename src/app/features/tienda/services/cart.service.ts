@@ -1,5 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { Product } from '../interfaces/product.interface';
+import { IndexedDbService } from '../../../core/services/indexed-db.service';
+import { ProductService } from './product.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +9,9 @@ import { Product } from '../interfaces/product.interface';
 export class CartService {
   // Usamos un signal para que los cambios se reflejen automáticamente donde se use.
   cartItems = signal<Product[]>([]);
+
+  private indexedDbService = inject(IndexedDbService);
+  private productService = inject(ProductService);
 
   constructor() {
     // Al iniciar el servicio, intentamos cargar el carrito desde localStorage.
@@ -64,4 +69,21 @@ export class CartService {
   getTotal() {
     return this.cartItems().reduce((total, item) => total + item.price * (item.quantity || 1), 0);
   }
+
+  async processPurchase(): Promise<void> {
+    const currentCartItems = this.cartItems();
+
+    for (const cartItem of currentCartItems) {
+      const allProducts = await this.indexedDbService.getProducts();
+      const productInDb = allProducts.find(p => p.id === cartItem.id);
+
+      if (productInDb) {
+        // Ensure stock doesn't go below zero
+        productInDb.stock = Math.max(0, productInDb.stock - (cartItem.quantity || 1));
+        await this.indexedDbService.updateProduct(productInDb);
+      }
+    }
+    this.clearCart();
+  }
 }
+
