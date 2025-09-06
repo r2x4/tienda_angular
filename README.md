@@ -41,11 +41,11 @@ El objetivo es crear una aplicación de tienda online con gestión de productos,
 ### Ingreso Administrador
 <img width="933" height="807" alt="image" src="https://github.com/user-attachments/assets/d3bc03c8-8eaa-4d8c-9a21-42a854f1520f" />
 
-### Ingreso de prodructos e inventario 
+### Ingreso de productos e inventario 
 
 <img width="1916" height="1073" alt="image" src="https://github.com/user-attachments/assets/9921bdb6-a321-4bc4-9f95-ad458e5f4d8e" />
 
-### Descargue Ventas E inventario
+### Descargue Ventas e inventario
 
 <img width="1908" height="215" alt="image" src="https://github.com/user-attachments/assets/15d7f0be-c2ac-482a-9406-5bd9e2582a66" />
 
