@@ -7,7 +7,7 @@
 
 Aplicación desarrollada en **Angular**, que permite a los usuarios navegar por una tienda online, gestionar un carrito de compras y a los administradores administrar productos y exportar reportes.  
 
-🔗 **Demo en producción:** [Ver en Vercel](https://vercel.com/rodrigos-projects-4a3d9e0f/tienda-angular-2zam)  
+🔗 **Demo en producción:** [Ver en Vercel](https://tienda-angular-2zam.vercel.app/inicial)  
 
 ---
 
