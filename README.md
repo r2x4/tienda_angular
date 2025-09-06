@@ -68,4 +68,7 @@ src/
  ├── environments/        # Configuración de entornos (dev/prod)
  └── index.html           # Punto de entrada de la aplicación
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 11ed0cc16a534758fa9c6fa6ce18af66c3305cd6
