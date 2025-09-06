@@ -1,23 +1,62 @@
-# Spor-Five 🛒
+# Spor-Five 🛒  
 
-Proyecto desarrollado en **Angular** como parte de la práctica de frontend.  
-El objetivo es crear una aplicación de tienda online con gestión de productos, carrito y navegación entre páginas, desplegado en **Vercel**.
+[![Angular](https://img.shields.io/badge/Angular-20.2-red?logo=angular&logoColor=white)](https://angular.dev/)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)  
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)  
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?logo=vercel&logoColor=white)](https://vercel.com/)  
 
-🔗 **Demo en producción:** [Spor-Five en Vercel](https://vercel.com/rodrigos-projects-4a3d9e0f/tienda-angular-2zam)
+Aplicación desarrollada en **Angular**, que permite a los usuarios navegar por una tienda online, gestionar un carrito de compras y a los administradores administrar productos y exportar reportes.  
 
-🔗 **Login Administrador:** [Spor-Five ](http://localhost:4200/admin/login)
-
----
-
-## 🚀 Tecnologías utilizadas
-
-- [Angular 17+](https://angular.dev/) - Framework principal
-- [TypeScript](https://www.typescriptlang.org/) - Lenguaje de desarrollo
-- [TailwindCSS](https://tailwindcss.com/) (opcional si lo integras para estilos)
-- [Vercel](https://vercel.com/) - Despliegue en la nube
+🔗 **Demo en producción:** [Ver en Vercel](https://tienda-angular-2zam.vercel.app/inicial)  
 
 ---
 
+## 🚀 Tecnologías utilizadas  
+
+- **Framework Frontend:** [Angular 20.2](https://angular.dev/)  
+- **Lenguaje:** [TypeScript](https://www.typescriptlang.org/)  
+- **Estilos:** [TailwindCSS](https://tailwindcss.com/)  
+- **Gestión de Estado:** Signals de Angular  
+- **Almacenamiento en el Navegador:**  
+  - `IndexedDB`: productos, ventas y usuarios  
+  - `localStorage`: carrito y autenticación  
+- **Enrutamiento:** Angular Router  
+- **Testing:** Karma + Jasmine  
+- **Despliegue:** [Vercel](https://vercel.com/)  
+
+---
+
+📊 Estado del proyecto
+✅ Funcionalidades implementadas (Frontend)
+- Proyecto en Construccion 
+
+
+---
+## 📦 Funcionalidades principales  
+
+### 🛍️ Tienda (Cliente)  
+- Navegación entre páginas: Inicio, Contacto, Reseñas, Nosotros.  
+- Categorías de productos: Implementos, Calzado, Ropa, Suplementos.  
+- **Carrito de Compras** con persistencia en `localStorage`.  
+- **Proceso de compra**: actualización de stock y registro de ventas en `IndexedDB`.  
+- Autenticación básica de usuario (simulada en frontend).  
+
+### ⚙️ Administración  
+- **Login de Administrador** con permisos simulados en frontend.  
+- CRUD de productos y servicios (persistencia en `IndexedDB`).  
+- Exportación de **ventas** e **inventario** en CSV.  
+- Panel independiente para gestión interna.  
+
+---
+
+🔐 Acceso
+- Usuario: login estándar en la tienda.
+- Administrador: /admin/login
+  
+### Ejemplo local:
+- http://localhost:4200/admin/login
+
+---
 ## Imagenes de Proyecto 
 
 ### Header
@@ -51,21 +90,20 @@ El objetivo es crear una aplicación de tienda online con gestión de productos,
 
 ---
 
-## 📂 Estructura del proyecto
+## 📂 Estructura del proyecto  
 
 ```bash
 src/
  ├── app/
- │   ├── core/            # Servicios globales, guardas, interceptores
+ │   ├── core/            # Servicios globales, guardas, layouts
  │   ├── features/        # Funcionalidades principales
- │   │   ├── products/    # Listado y detalle de productos
+ │   │   ├── tienda/      # Vistas de cliente
+ │   │   ├── admin/       # Panel de administración
  │   │   ├── cart/        # Carrito de compras
- │   │   └── auth/        # Autenticación de usuarios (si aplica)
+ │   │   └── auth/        # Autenticación
  │   ├── app.routes.ts    # Definición de rutas
- │   ├── app.component.ts # Componente raíz
- │   └── ...
+ │   └── app.component.ts # Componente raíz
  ├── assets/              # Imágenes y recursos estáticos
- ├── environments/        # Configuración de entornos (dev/prod)
- └── index.html           # Punto de entrada de la aplicación
-
+ ├── environments/        # Configuración dev/prod
+ └── index.html           # Punto de entrada
 
