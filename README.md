@@ -29,9 +29,6 @@ El objetivo es crear una aplicación de tienda online con gestión de productos,
 ### Carrito
 <img width="1917" height="1072" alt="Screenshot 2025-09-02 133500" src="https://github.com/user-attachments/assets/5b2b2145-0597-4ae1-be60-4a2919fcb6f7" />
 
-<img width="1917" height="1073" alt="Screenshot 2025-09-02 133347" src="https://github.com/user-attachments/assets/ad571950-9213-4cd1-8b74-df21b367c22f" />
-
-### carrito
 <img width="1916" height="1074" alt="Screenshot 2025-09-02 133534" src="https://github.com/user-attachments/assets/33b80d7c-c2cc-4fd9-b3ab-534d4863a817" />
 
 ### Login Usuario
@@ -45,7 +42,7 @@ El objetivo es crear una aplicación de tienda online con gestión de productos,
 
 <img width="1916" height="1073" alt="image" src="https://github.com/user-attachments/assets/9921bdb6-a321-4bc4-9f95-ad458e5f4d8e" />
 
-### Descargue Ventas e inventario
+### Descargue ventas e inventario en Excel
 
 <img width="1908" height="215" alt="image" src="https://github.com/user-attachments/assets/15d7f0be-c2ac-482a-9406-5bd9e2582a66" />
 
