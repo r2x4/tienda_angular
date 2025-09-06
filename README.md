@@ -26,6 +26,12 @@ Aplicación desarrollada en **Angular**, que permite a los usuarios navegar por 
 
 ---
 
+📊 Estado del proyecto
+✅ Funcionalidades implementadas (Frontend)
+- Proyecto en Construccion 
+
+
+---
 ## 📦 Funcionalidades principales  
 
 ### 🛍️ Tienda (Cliente)  
@@ -40,6 +46,47 @@ Aplicación desarrollada en **Angular**, que permite a los usuarios navegar por 
 - CRUD de productos y servicios (persistencia en `IndexedDB`).  
 - Exportación de **ventas** e **inventario** en CSV.  
 - Panel independiente para gestión interna.  
+
+---
+
+🔐 Acceso
+- Usuario: login estándar en la tienda.
+- Administrador: /admin/login
+  
+### Ejemplo local:
+- http://localhost:4200/admin/login
+
+---
+## Imagenes de Proyecto 
+
+### Header
+<img width="1915" height="1069" alt="Screenshot 2025-09-02 210215" src="https://github.com/user-attachments/assets/1098d7a0-870b-4d5e-8410-1e67d5884fe6" />
+
+### Footer
+<img width="1914" height="1068" alt="Screenshot 2025-09-02 210231" src="https://github.com/user-attachments/assets/9a11c77a-331a-42a8-bdf9-817cd6a9f656" />
+
+### Carrito
+<img width="1917" height="1072" alt="Screenshot 2025-09-02 133500" src="https://github.com/user-attachments/assets/5b2b2145-0597-4ae1-be60-4a2919fcb6f7" />
+
+<img width="1917" height="1073" alt="Screenshot 2025-09-02 133347" src="https://github.com/user-attachments/assets/ad571950-9213-4cd1-8b74-df21b367c22f" />
+
+### carrito
+<img width="1916" height="1074" alt="Screenshot 2025-09-02 133534" src="https://github.com/user-attachments/assets/33b80d7c-c2cc-4fd9-b3ab-534d4863a817" />
+
+### Login Usuario
+
+<img width="1916" height="1074" alt="Screenshot 2025-09-02 133606" src="https://github.com/user-attachments/assets/4c04e72b-732e-4fce-8598-04d28c61c0eb" />
+
+### Ingreso Administrador
+<img width="933" height="807" alt="image" src="https://github.com/user-attachments/assets/d3bc03c8-8eaa-4d8c-9a21-42a854f1520f" />
+
+### Ingreso de prodructos e inventario 
+
+<img width="1916" height="1073" alt="image" src="https://github.com/user-attachments/assets/9921bdb6-a321-4bc4-9f95-ad458e5f4d8e" />
+
+### Descargue Ventas E inventario
+
+<img width="1908" height="215" alt="image" src="https://github.com/user-attachments/assets/15d7f0be-c2ac-482a-9406-5bd9e2582a66" />
 
 ---
 
@@ -59,44 +106,4 @@ src/
  ├── assets/              # Imágenes y recursos estáticos
  ├── environments/        # Configuración dev/prod
  └── index.html           # Punto de entrada
-📸 Capturas de pantalla
-Header
-<img src="https://github.com/user-attachments/assets/1098d7a0-870b-4d5e-8410-1e67d5884fe6" width="800" />
-Footer
-<img src="https://github.com/user-attachments/assets/9a11c77a-331a-42a8-bdf9-817cd6a9f656" width="800" />
-Carrito
-<img src="https://github.com/user-attachments/assets/5b2b2145-0597-4ae1-be60-4a2919fcb6f7" width="800" /> <img src="https://github.com/user-attachments/assets/33b80d7c-c2cc-4fd9-b3ab-534d4863a817" width="800" />
-Login Usuario
-<img src="https://github.com/user-attachments/assets/4c04e72b-732e-4fce-8598-04d28c61c0eb" width="800" />
-Panel de Administración
-<img src="https://github.com/user-attachments/assets/d3bc03c8-8eaa-4d8c-9a21-42a854f1520f" width="600" /> <img src="https://github.com/user-attachments/assets/9921bdb6-a321-4bc4-9f95-ad458e5f4d8e" width="800" />
-Exportación CSV
-<img src="https://github.com/user-attachments/assets/15d7f0be-c2ac-482a-9406-5bd9e2582a66" width="800" />
-🔐 Acceso
-Usuario: login estándar en la tienda.
 
-Administrador: /admin/login
-
-Ejemplo local:
-
-bash
-Copiar código
-http://localhost:4200/admin/login
-📊 Estado del proyecto
-✅ Funcionalidades implementadas (Frontend)
-
-Navegación entre páginas (Inicio, Contacto, Reseñas, Nosotros).
-
-Categorías de productos (Implementos, Calzado, Ropa, Suplementos).
-
-Carrito de compras con persistencia en localStorage.
-
-Proceso de compra (actualización de stock y registro de ventas en IndexedDB).
-
-Autenticación básica de usuarios y administradores (simulada en frontend).
-
-CRUD de productos y servicios en el panel de administración (datos en IndexedDB).
-
-Exportación de inventario y ventas en CSV.
-
-Despliegue en Vercel.
