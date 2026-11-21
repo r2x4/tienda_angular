@@ -58,7 +58,7 @@ def setup_test_database():
         db.commit()
         db.refresh(admin_role)
         admin_user = User(
-            email="admin@test.local",
+            email="admin@example.com",
             username="admin_test",
             password_hash=hash_password("AdminPass123!"),
             is_active=True,
@@ -83,3 +83,4 @@ def setup_test_database():
         )
         conn.execute(text(f"DROP DATABASE IF EXISTS {TEST_DB_NAME}"))
     admin_engine.dispose()
+

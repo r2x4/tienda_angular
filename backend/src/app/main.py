@@ -8,6 +8,8 @@ from app.core.config import settings
 from app.core.logging import configure_logging
 from app.db.session import SessionLocal
 from app.modules.auth.router import router as auth_router
+from app.modules.catalog.router import admin_router as catalog_admin_router
+from app.modules.catalog.router import public_router as catalog_public_router
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +43,8 @@ def create_app() -> FastAPI:
         return response
 
     app.include_router(auth_router)
+    app.include_router(catalog_public_router)
+    app.include_router(catalog_admin_router)
     return app
 
 

@@ -1,6 +1,7 @@
 ﻿from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.dependencies import get_current_user, require_roles
 from app.db.session import get_db
 from app.modules.auth.models import User
@@ -68,6 +69,7 @@ def change_password_endpoint(
     return MessageResponse(message="Password changed")
 
 
-@router.get("/admin-check", response_model=MessageResponse)
-def admin_check(_: User = Depends(require_roles("ADMIN"))) -> MessageResponse:
-    return MessageResponse(message="Admin access granted")
+if settings.enable_auth_diagnostics:
+    @router.get("/admin-check", response_model=MessageResponse, include_in_schema=False)
+    def admin_check(_: User = Depends(require_roles("ADMIN"))) -> MessageResponse:
+        return MessageResponse(message="Admin access granted")
