@@ -1,23 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ServiceCrudComponent } from './service-crud';
+import { IndexedDbService } from '../../../core/services/indexed-db.service';
 
-import { ServiceCrud } from './service-crud';
-
-describe('ServiceCrud', () => {
-  let component: ServiceCrud;
-  let fixture: ComponentFixture<ServiceCrud>;
+describe('ServiceCrudComponent', () => {
+  let component: ServiceCrudComponent;
+  let fixture: ComponentFixture<ServiceCrudComponent>;
+  let indexedDbServiceSpy: jasmine.SpyObj<IndexedDbService>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ServiceCrud]
-    })
-    .compileComponents();
+    indexedDbServiceSpy = jasmine.createSpyObj<IndexedDbService>('IndexedDbService', [
+      'getServices',
+      'addService',
+      'updateService',
+      'deleteService',
+    ]);
+    indexedDbServiceSpy.getServices.and.resolveTo([]);
+    indexedDbServiceSpy.addService.and.resolveTo({} as any);
+    indexedDbServiceSpy.updateService.and.resolveTo({} as any);
+    indexedDbServiceSpy.deleteService.and.resolveTo();
 
-    fixture = TestBed.createComponent(ServiceCrud);
+    await TestBed.configureTestingModule({
+      imports: [ServiceCrudComponent],
+      providers: [{ provide: IndexedDbService, useValue: indexedDbServiceSpy }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ServiceCrudComponent);
     component = fixture.componentInstance;
+    await fixture.whenStable();
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should load services on init', () => {
+    expect(indexedDbServiceSpy.getServices).toHaveBeenCalled();
+    expect(component.services()).toEqual([]);
   });
 });
