@@ -1,76 +1,70 @@
-<div class="container">
+﻿<div class="container">
   <h1>Gestión de Productos</h1>
+  <p class="legacy-notice">{{ legacyNotice() }}</p>
+  <div *ngIf="loading()">Cargando productos...</div>
+  <div *ngIf="error()" class="error-message">{{ error() }} <button type="button" (click)="load()">Reintentar</button></div>
+  <div *ngIf="success()" class="success-message">{{ success() }}</div>
 
   <div class="grid-container">
-    <!-- Product Editor Card -->
     <div class="card">
-      <h2>{{ currentProduct().id ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h2>
-      <form (ngSubmit)="currentProduct().id ? updateProduct() : addProduct()">
+      <h2>{{ form.id ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h2>
+      <form (ngSubmit)="save()">
+        <div class="form-group"><label>Nombre<input name="name" [(ngModel)]="form.name" required></label></div>
+        <div class="form-group"><label>Slug<input name="slug" [(ngModel)]="form.slug"></label></div>
+        <div class="form-group"><label>Descripción<textarea name="description" [(ngModel)]="form.description" rows="3"></textarea></label></div>
+        <div class="form-group"><label>Precio COP<input name="price_cop" type="text" [(ngModel)]="form.price_cop" required></label></div>
+        <div class="form-group"><label>Stock<input name="stock_quantity" type="number" min="0" [(ngModel)]="form.stock_quantity" required></label></div>
         <div class="form-group">
-          <label for="name">Nombre del Producto:</label>
-          <input type="text" id="name" name="name" [(ngModel)]="currentProduct().name" required>
+          <label>Categoría
+            <select name="category_id" [(ngModel)]="form.category_id" required>
+              <option value="">Selecciona una categoría</option>
+              <option *ngFor="let cat of categories()" [value]="cat.id">{{ cat.name }}{{ cat.is_active ? '' : ' (inactiva)' }}</option>
+            </select>
+          </label>
         </div>
-        <div class="form-group">
-          <label for="price">Precio:</label>
-          <input type="number" id="price" name="price" [(ngModel)]="currentProduct().price" required>
+        <div class="form-group"><label><input type="checkbox" name="is_active" [(ngModel)]="form.is_active"> Activo</label></div>
+
+        <div class="images-section">
+          <div class="images-header"><h3>Imágenes</h3><button type="button" class="btn-secondary" (click)="addImage()">Agregar imagen</button></div>
+          <div class="image-item" *ngFor="let img of form.images; let i = index">
+            <div class="image-preview"><img *ngIf="img.previewUrl || img.url" [src]="img.previewUrl || resolveImageUrl(img.url)" alt="preview" width="80" height="80"></div>
+            <div class="image-fields">
+              <label>Archivo<input type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event, i)"></label>
+              <label>Alt text<input type="text" [(ngModel)]="img.alt_text" [name]="'alt_'+i"></label>
+              <label>Orden<input type="number" min="0" [(ngModel)]="img.sort_order" [name]="'sort_'+i"></label>
+              <label><input type="radio" name="primaryImage" [checked]="img.is_primary" (change)="setPrimary(i)"> Principal</label>
+              <div class="image-meta"><span *ngIf="img.isExisting && img.url">URL: {{ img.url }}</span> <span *ngIf="img.uploading">Cargando...</span> <span *ngIf="img.uploadError" class="error-inline">{{ img.uploadError }}</span></div>
+              <button type="button" class="btn-delete" (click)="removeImage(i)">Quitar</button>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="imageUrl">URL de la Imagen:</label>
-          <input type="text" id="imageUrl" name="imageUrl" [(ngModel)]="currentProduct().imageUrl" required>
-        </div>
-        <div class="form-group">
-          <label for="colors">Colores (separados por comas):</label>
-          <input type="text" id="colors" name="colors" [(ngModel)]="currentProduct().colorsString">
-        </div>
-        <div class="form-group">
-          <label for="category">Categoría:</label>
-          <select id="category" name="category" [(ngModel)]="currentProduct().category" required>
-            <option value="">Selecciona una categoría</option>
-            <option *ngFor="let cat of categories" [value]="cat">{{ cat | titlecase }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="stock">Stock:</label>
-          <input type="number" id="stock" name="stock" [(ngModel)]="currentProduct().stock" required>
-        </div>
+
         <div class="button-group">
-          <button type="submit" class="btn-primary">{{ currentProduct().id ? 'Actualizar' : 'Guardar Nuevo' }}</button>
+          <button type="submit" class="btn-primary" [disabled]="saving()">{{ saving() ? 'Guardando...' : (form.id ? 'Actualizar' : 'Guardar Nuevo') }}</button>
           <button type="button" (click)="clearForm()" class="btn-secondary">Limpiar</button>
         </div>
       </form>
     </div>
 
-    <!-- Products List -->
     <div class="list-container">
       <h2>Lista de Productos</h2>
       <table>
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Colores</th>
-            <th>Categoría</th>
-            <th>Stock</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Imagen</th><th>Nombre</th><th>Precio COP</th><th>Categoría</th><th>Stock</th><th>Activo</th><th>ID</th><th>Acciones</th></tr></thead>
         <tbody>
           <tr *ngFor="let product of products()">
-            <td><img [src]="product.imageUrl" alt="{{ product.name }}" width="50" height="50"></td>
+            <td><img *ngIf="product.images?.length" [src]="resolveImageUrl((product.images![0].url))" alt="{{ product.name }}" width="50" height="50"></td>
             <td>{{ product.name }}</td>
-            <td>{{ product.price | currency:'USD' }}</td>
-            <td>{{ product.colors.join(', ') }}</td>
-            <td>{{ product.category | titlecase }}</td>
-            <td>{{ product.stock }}</td>
+            <td>{{ product.price_cop }}</td>
+            <td>{{ product.category?.name || product.category_id }}</td>
+            <td>{{ product.stock_quantity }}</td>
+            <td>{{ product.is_active ? 'Sí' : 'No' }}</td>
+            <td class="id-cell">{{ product.id }}</td>
             <td>
-              <button (click)="editProduct(product)" class="btn-edit">Editar</button>
-              <button (click)="deleteProduct(product.id)" class="btn-delete">Eliminar</button>
+              <button (click)="edit(product)" class="btn-edit">Editar</button>
+              <button (click)="deactivate(product)" class="btn-delete" [disabled]="!product.is_active">Desactivar</button>
             </td>
           </tr>
-          <tr *ngIf="products().length === 0">
-            <td colspan="7" class="text-center">No hay productos para mostrar.</td>
-          </tr>
+          <tr *ngIf="!loading() && products().length === 0"><td colspan="8" class="text-center">No hay productos para mostrar.</td></tr>
         </tbody>
       </table>
     </div>

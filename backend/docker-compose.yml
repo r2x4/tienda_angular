@@ -40,6 +40,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-tienda_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me}
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-tienda_user}:${POSTGRES_PASSWORD:-change_me}@db:5432/${POSTGRES_DB:-tienda_angular}
+      MEDIA_ROOT: ${MEDIA_ROOT:-/app/media}
+      MEDIA_URL: ${MEDIA_URL:-/media}
+      MEDIA_MAX_UPLOAD_MB: ${MEDIA_MAX_UPLOAD_MB:-5}
+    volumes:
+      - media_data:/app/media
     ports:
       - "8000:8000"
     depends_on:
@@ -56,6 +61,7 @@ services:
 
 volumes:
   postgres_data:
+  media_data:
 
 networks:
   tienda_backend:

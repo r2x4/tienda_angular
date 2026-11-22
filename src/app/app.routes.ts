@@ -20,6 +20,11 @@ export const routes: Routes = [
         data: { title: 'Admin Services' }
       },
       {
+        path: 'categories',
+        loadComponent: () => import('./features/admin/category-crud/category-crud').then(m => m.CategoryCrudComponent),
+        data: { title: 'Admin Categories' }
+      },
+      {
         path: 'products',
         loadComponent: () => import('./features/admin/product-crud/product-crud').then(m => m.ProductCrudComponent),
         data: { title: 'Admin Products' }
@@ -79,6 +84,16 @@ export const routes: Routes = [
         path: 'suplementos',
         loadComponent: () => import('./features/tienda/pages/suplementos/suplementos.component').then(m => m.SuplementosComponent),
         data: { title: 'Suplementos' }
+      },
+      {
+        path: 'servicios',
+        loadComponent: () => import('./features/tienda/pages/servicios/servicios.component').then(m => m.ServiciosComponent),
+        data: { title: 'Servicios' }
+      },
+      {
+        path: 'servicios/:id',
+        loadComponent: () => import('./features/tienda/pages/servicios/detalle/servicio-detalle.component').then(m => m.ServicioDetalleComponent),
+        data: { title: 'Detalle de servicio' }
       },
       {
         path: 'cart',

@@ -2,6 +2,10 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -13,6 +17,8 @@ from app.modules.auth.router import router as auth_router
 from app.modules.cart.router import router as cart_router
 from app.modules.catalog.router import admin_router as catalog_admin_router
 from app.modules.catalog.router import public_router as catalog_public_router
+from app.modules.media.router import router as media_admin_router
+from app.modules.media.storage import LocalMediaStorage
 from app.modules.orders.router import admin_router as orders_admin_router
 from app.modules.orders.router import router as orders_router
 from app.modules.services_admin.router import admin_router as services_admin_router
@@ -48,6 +54,23 @@ def create_app() -> FastAPI:
         allow_headers=cors_headers,
     )
 
+    media_storage = LocalMediaStorage(settings)
+    media_storage.ensure_directories()
+
+    class MediaHeadersMiddleware(BaseHTTPMiddleware):
+        async def dispatch(self, request: Request, call_next):
+            response: Response = await call_next(request)
+            path = request.url.path
+            media_prefix = settings.media_url_prefix
+            if path == media_prefix or path.startswith(media_prefix + "/"):
+                response.headers["X-Content-Type-Options"] = "nosniff"
+                # UUID filenames are immutable; allow long cache. Safe for single-store static media.
+                response.headers.setdefault("Cache-Control", "public, max-age=31536000, immutable")
+            return response
+
+    app.add_middleware(MediaHeadersMiddleware)
+    app.mount(settings.media_url_prefix, StaticFiles(directory=settings.media_root_path, check_dir=True), name="media")
+
     @app.get("/health", tags=["health"])
     def health() -> dict[str, str]:
         db_ok, db_error = check_database_connection()
@@ -68,6 +91,7 @@ def create_app() -> FastAPI:
     app.include_router(catalog_admin_router)
     app.include_router(services_public_router)
     app.include_router(services_admin_router)
+    app.include_router(media_admin_router)
     app.include_router(cart_router)
     app.include_router(orders_router)
     app.include_router(orders_admin_router)

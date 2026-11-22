@@ -50,3 +50,46 @@ export interface ProductAvailabilityRead {
 export interface CatalogProductsQuery {
   category_id?: string;
 }
+
+export interface CategoryCreate {
+  name: string;
+  slug?: string | null;
+  description?: string | null;
+  is_active?: boolean;
+}
+
+export interface CategoryUpdate {
+  name?: string | null;
+  slug?: string | null;
+  description?: string | null;
+  is_active?: boolean | null;
+}
+
+export interface ProductImageCreate {
+  url: string;
+  alt_text?: string | null;
+  is_primary?: boolean;
+  sort_order?: number;
+}
+
+export interface ProductCreate {
+  category_id: string;
+  name: string;
+  slug?: string | null;
+  description?: string | null;
+  price_cop: number | string;
+  stock_quantity: number;
+  is_active?: boolean;
+  images?: ProductImageCreate[];
+}
+
+export interface ProductUpdate {
+  category_id?: string | null;
+  name?: string | null;
+  slug?: string | null;
+  description?: string | null;
+  price_cop?: number | string | null;
+  stock_quantity?: number | null;
+  is_active?: boolean | null;
+  images?: ProductImageCreate[] | null;
+}

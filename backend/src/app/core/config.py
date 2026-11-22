@@ -1,4 +1,5 @@
-﻿from pydantic import Field
+﻿from pathlib import Path
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -61,9 +62,26 @@ class Settings(BaseSettings):
     auth_rate_limit_refresh_window_seconds: int = Field(default=60, alias="AUTH_RATE_LIMIT_REFRESH_WINDOW_SECONDS")
     auth_rate_limit_refresh_block_seconds: int = Field(default=300, alias="AUTH_RATE_LIMIT_REFRESH_BLOCK_SECONDS")
 
+    media_root: str = Field(default="/app/media", alias="MEDIA_ROOT")
+    media_url: str = Field(default="/media", alias="MEDIA_URL")
+    media_max_upload_mb: int = Field(default=5, alias="MEDIA_MAX_UPLOAD_MB")
+
     @property
     def is_secure_environment(self) -> bool:
         return self.app_env.strip().lower() in SECURE_ENVIRONMENTS
+
+    @property
+    def media_root_path(self) -> Path:
+        return Path(self.media_root)
+
+    @property
+    def media_url_prefix(self) -> str:
+        prefix = "/" + self.media_url.strip("/")
+        return prefix
+
+    @property
+    def media_max_upload_bytes(self) -> int:
+        return max(1, self.media_max_upload_mb) * 1024 * 1024
 
     def cors_origins_list(self) -> list[str]:
         origins = [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]
