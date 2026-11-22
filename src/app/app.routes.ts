@@ -30,6 +30,16 @@ export const routes: Routes = [
         data: { title: 'Admin Products' }
       },
       {
+        path: 'orders',
+        loadComponent: () => import('./features/admin/order-admin/order-admin').then(m => m.OrderAdminComponent),
+        data: { title: 'Admin Orders' }
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/admin/user-admin/user-admin').then(m => m.UserAdminComponent),
+        data: { title: 'Admin Users' }
+      },
+      {
         path: '', // Default child route for /admin
         redirectTo: 'services',
         pathMatch: 'full'

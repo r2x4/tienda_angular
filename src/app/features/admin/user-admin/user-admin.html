@@ -1,0 +1,67 @@
+﻿<div class="container">
+  <h1>Gestión de Usuarios y Roles</h1>
+  <p class="legacy-notice">{{ legacyNotice() }}</p>
+  <div *ngIf="loading()">Cargando usuarios...</div>
+  <div *ngIf="error()" class="error-message">{{ error() }} <button type="button" (click)="load()">Reintentar</button></div>
+  <div *ngIf="success()" class="success-message">{{ success() }}</div>
+
+  <div class="card filters">
+    <label>Buscar<input [(ngModel)]="q" name="q" placeholder="email/username/nombre"></label>
+    <label>Rol
+      <select [(ngModel)]="role" name="role"><option value="">Todos</option><option *ngFor="let r of roles()" [value]="r.code">{{ r.code }}</option></select>
+    </label>
+    <label>Estado
+      <select [(ngModel)]="is_active" name="is_active"><option value="">Todos</option><option value="true">Activo</option><option value="false">Inactivo</option></select>
+    </label>
+    <button type="button" class="btn-primary" (click)="search()" [disabled]="loading()">Buscar</button>
+  </div>
+
+  <div class="grid-container">
+    <div class="list-container">
+      <h2>Usuarios ({{ total }})</h2>
+      <table>
+        <thead><tr><th>Email</th><th>Nombre</th><th>Activo</th><th>Roles</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let u of users()">
+            <td>{{ u.email }}</td>
+            <td>{{ (u.first_name || '') + ' ' + (u.last_name || '') }}</td>
+            <td>{{ u.is_active ? 'Sí' : 'No' }}</td>
+            <td>{{ roleCodes(u) }}</td>
+            <td>
+              <button class="btn-edit" (click)="select(u)">Detalle/Roles</button>
+              <button class="btn-delete" (click)="toggleActive(u)" [disabled]="saving()">{{ u.is_active ? 'Desactivar' : 'Activar' }}</button>
+            </td>
+          </tr>
+          <tr *ngIf="!loading() && users().length === 0"><td colspan="5" class="text-center">No hay usuarios para mostrar.</td></tr>
+        </tbody>
+      </table>
+      <div class="button-group">
+        <button type="button" class="btn-secondary" (click)="prevPage()" [disabled]="skip===0 || loading()">Anterior</button>
+        <span>Mostrando {{ total ? skip + 1 : 0 }} - {{ endIndex() }} de {{ total }}</span>
+        <button type="button" class="btn-secondary" (click)="nextPage()" [disabled]="skip + limit >= total || loading()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="selected() as u">
+      <h2>Detalle Usuario</h2>
+      <div *ngIf="detailError()" class="error-message">{{ detailError() }}</div>
+      <p><strong>ID:</strong> <span class="id-cell">{{ u.id }}</span></p>
+      <p><strong>Email:</strong> {{ u.email }}</p>
+      <p><strong>Username:</strong> {{ u.username || '-' }}</p>
+      <p><strong>Nombre:</strong> {{ u.first_name || '-' }} {{ u.last_name || '' }}</p>
+      <p><strong>Teléfono:</strong> {{ u.phone || '-' }}</p>
+      <p><strong>Ciudad:</strong> {{ u.city || '-' }}</p>
+      <p><strong>Activo:</strong> {{ u.is_active ? 'Sí' : 'No' }}</p>
+      <p><strong>Creado:</strong> {{ u.created_at | date:'medium' }}</p>
+      <p><strong>Actualizado:</strong> {{ u.updated_at | date:'medium' }}</p>
+      <h3>Roles asignados</h3>
+      <div *ngFor="let r of roles()">
+        <label><input type="checkbox" [checked]="selectedRoleCodes().includes(r.code)" (change)="toggleRole(r.code, $any($event.target).checked)" [disabled]="saving()"> {{ r.code }} - {{ r.name }}</label>
+      </div>
+      <div class="button-group">
+        <button type="button" class="btn-primary" (click)="saveRoles()" [disabled]="saving()">Guardar roles</button>
+      </div>
+      <p class="legacy-notice">La autoridad final es el backend. Operaciones como desactivar el último ADMIN pueden ser rechazadas (409) y se muestran sin marcar éxito.</p>
+    </div>
+  </div>
+</div>
