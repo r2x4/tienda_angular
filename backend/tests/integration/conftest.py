@@ -3,7 +3,7 @@ import uuid
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, select, text
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
@@ -15,24 +15,22 @@ from app.modules.auth.models import Role, User
 from app.modules.auth.service import ROLE_ADMIN, ROLE_CUSTOMER
 
 
-TEST_DB_NAME = f"tienda_test_{uuid.uuid4().hex[:8]}"
-
-
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def setup_test_database():
+    test_db_name = f"tienda_test_{uuid.uuid4().hex[:8]}"
     admin_url = (
         f"postgresql+psycopg://{settings.postgres_user}:{settings.postgres_password}"
         f"@{settings.postgres_host}:{settings.postgres_port}/postgres"
     )
     admin_engine = create_engine(admin_url, isolation_level="AUTOCOMMIT")
     with admin_engine.connect() as conn:
-        conn.execute(text(f"DROP DATABASE IF EXISTS {TEST_DB_NAME}"))
-        conn.execute(text(f"CREATE DATABASE {TEST_DB_NAME}"))
+        conn.execute(text(f"DROP DATABASE IF EXISTS {test_db_name}"))
+        conn.execute(text(f"CREATE DATABASE {test_db_name}"))
     admin_engine.dispose()
 
     test_db_url = (
         f"postgresql+psycopg://{settings.postgres_user}:{settings.postgres_password}"
-        f"@{settings.postgres_host}:{settings.postgres_port}/{TEST_DB_NAME}"
+        f"@{settings.postgres_host}:{settings.postgres_port}/{test_db_name}"
     )
     engine = create_engine(test_db_url, pool_pre_ping=True)
     TestingSessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
@@ -78,9 +76,8 @@ def setup_test_database():
         conn.execute(
             text(
                 "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
-                f"WHERE datname = '{TEST_DB_NAME}' AND pid <> pg_backend_pid()"
+                f"WHERE datname = '{test_db_name}' AND pid <> pg_backend_pid()"
             )
         )
-        conn.execute(text(f"DROP DATABASE IF EXISTS {TEST_DB_NAME}"))
+        conn.execute(text(f"DROP DATABASE IF EXISTS {test_db_name}"))
     admin_engine.dispose()
-

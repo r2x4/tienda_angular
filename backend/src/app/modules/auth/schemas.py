@@ -1,7 +1,7 @@
 ﻿from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class RoleRead(BaseModel):
@@ -10,6 +10,7 @@ class RoleRead(BaseModel):
     id: UUID
     code: str
     name: str
+    description: str | None = None
 
 
 class UserRead(BaseModel):
@@ -70,3 +71,48 @@ class AccessTokenResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class AdminUserRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    email: EmailStr
+    username: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    phone: str | None = None
+    city: str | None = None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    roles: list[RoleRead] = Field(default_factory=list)
+
+
+class AdminUserListResponse(BaseModel):
+    items: list[AdminUserRead]
+    total: int
+    skip: int
+    limit: int
+
+
+class AdminUserRolesReplaceRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    roles: list[str] = Field(min_length=1)
+
+    @field_validator("roles")
+    @classmethod
+    def validate_roles(cls, value: list[str]) -> list[str]:
+        normalized: list[str] = []
+        seen: set[str] = set()
+        for code in value:
+            c = code.strip().upper()
+            if not c:
+                raise ValueError("role code cannot be empty")
+            if c not in seen:
+                seen.add(c)
+                normalized.append(c)
+        if not normalized:
+            raise ValueError("at least one role is required")
+        return normalized
