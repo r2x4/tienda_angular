@@ -1,86 +1,193 @@
-﻿<div class="cart-container">
-  <h2>Carrito de Compras</h2>
+﻿<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+  <header class="mb-8">
+    <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Compra</p>
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      <div>
+        <h1 class="font-display text-3xl sm:text-4xl font-bold text-ink-900 mt-2">Tu carrito</h1>
+        <p class="text-ink-600 mt-2">Revisa tus productos, ajusta cantidades y completa tu compra con claridad.</p>
+      </div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-line-200 text-sm text-ink-600">
+        <i class="fas fa-shopping-bag text-teal-700" aria-hidden="true"></i>
+        <span><strong class="text-ink-900">{{ cartItems().length }}</strong> {{ cartItems().length === 1 ? 'artículo' : 'artículos' }}</span>
+      </div>
+    </div>
+  </header>
 
-  <div *ngIf="transitionMessage()" class="cart-alert warning">{{ transitionMessage() }}</div>
-  <div *ngIf="error()" class="cart-alert error">{{ error() }} <button type="button" (click)="loadCart()">Reintentar</button></div>
-  <div *ngIf="loading()" class="cart-alert">Cargando carrito...</div>
+  <div class="space-y-4 mb-6">
+    <app-ui-alert *ngIf="transitionMessage()" variant="warning" [title]="'Aviso de carrito'">
+      {{ transitionMessage() }}
+    </app-ui-alert>
 
-  <ng-container *ngIf="cartItems().length > 0; else emptyCart">
-    <div class="cart-items-list">
-      <div *ngFor="let item of cartItems()" class="cart-item">
-        <img [src]="item.imageUrl" [alt]="item.name" [title]="item.name" class="item-image">
-        <div class="item-details">
-          <p class="item-name">{{ item.name }}</p>
-          <p class="item-price">{{ formatCop(item.price_cop) }} x {{ item.quantity }}</p>
-          <p class="item-color">Subtotal: {{ formatCop(item.line_total_cop) }}</p>
-          <p class="item-color" [class.error]="!item.is_active || item.stock_quantity <= 0">
-            {{ item.is_active ? (item.stock_quantity > 0 ? 'Disponible' : 'Agotado') : 'Inactivo' }} (stock: {{ item.stock_quantity }})
-          </p>
-          <div class="qty-controls">
-            <label>Cantidad
-              <input type="number" min="1" [max]="item.stock_quantity || 100" [ngModel]="item.quantity" (ngModelChange)="updateQuantity(item.id, $event)" />
-            </label>
-          </div>
+    <app-ui-alert *ngIf="error()" variant="error" [title]="'No se pudo actualizar el carrito'">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+        <span>{{ error() }}</span>
+        <button type="button" (click)="loadCart()" class="min-h-11 px-4 rounded-xl border border-red-200 text-danger-600 font-semibold hover:bg-red-50">Reintentar</button>
+      </div>
+    </app-ui-alert>
+  </div>
+
+  <div *ngIf="loading()" class="grid lg:grid-cols-[1fr_360px] gap-6" aria-live="polite">
+    <div class="space-y-4">
+      <div *ngFor="let i of [1,2,3]" class="bg-white rounded-2xl border border-line-200 p-4 sm:p-5">
+        <div class="flex gap-4">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl skeleton shrink-0"></div>
+          <div class="flex-1 space-y-3"><div class="h-5 skeleton w-2/3"></div><div class="h-4 skeleton w-1/3"></div><div class="h-10 skeleton w-32"></div></div>
         </div>
-        <button type="button" (click)="removeFromCart(item.id)" class="remove-button" [disabled]="loading()">Eliminar</button>
       </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-line-200 p-6 space-y-4"><div class="h-6 skeleton w-1/2"></div><div class="h-4 skeleton"></div><div class="h-12 skeleton"></div></div>
+  </div>
+
+  <ng-container *ngIf="!loading()">
+    <div *ngIf="cartItems().length === 0; else cartContent" class="bg-white rounded-3xl border border-line-200 p-6 sm:p-10">
+      <app-ui-empty-state icon="🛒" title="Tu carrito está vacío" description="Cuando agregues productos, aparecerán aquí para que completes tu compra con tranquilidad.">
+        <a routerLink="/calzado" class="inline-flex items-center justify-center min-h-11 px-5 rounded-xl bg-ink-900 text-white font-semibold hover:bg-black/90">Explorar calzado</a>
+        <a routerLink="/servicios" class="inline-flex items-center justify-center min-h-11 px-5 rounded-xl border border-line-200 text-ink-900 font-semibold hover:bg-sand-50">Ver servicios</a>
+      </app-ui-empty-state>
     </div>
 
-    <div class="cart-summary">
-      <h3>Total: {{ formatCop(total()) }}</h3>
-      <div class="cart-actions">
-        <button type="button" (click)="clearCart()" class="clear-button" [disabled]="loading()">Vaciar Carrito</button>
+    <ng-template #cartContent>
+      <div class="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
+        <section aria-label="Productos en el carrito" class="space-y-4">
+          <article *ngFor="let item of cartItems()" class="bg-white rounded-2xl border border-line-200 p-4 sm:p-5 shadow-sm">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="w-full sm:w-28 h-44 sm:h-28 rounded-xl overflow-hidden bg-sand-50 border border-line-200 shrink-0">
+                <img [src]="item.imageUrl" [alt]="item.name" [title]="item.name" class="w-full h-full object-cover" loading="lazy">
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div>
+                    <h2 class="font-display text-lg font-semibold text-ink-900 leading-snug">{{ item.name }}</h2>
+                    <p class="text-sm text-ink-600 mt-1">Precio unitario: {{ formatCop(item.price_cop) }}</p>
+                  </div>
+                  <span class="inline-flex w-fit items-center px-2.5 py-1 rounded-full text-xs font-semibold"
+                        [ngClass]="item.is_active && item.stock_quantity > 0 ? 'bg-emerald-50 text-success-600' : 'bg-red-50 text-danger-600'">
+                    {{ item.is_active ? (item.stock_quantity > 0 ? 'Disponible' : 'Agotado') : 'Inactivo' }}
+                  </span>
+                </div>
+
+                <div class="mt-4 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                  <div class="flex flex-col sm:flex-row gap-4 sm:items-end">
+                    <label class="block">
+                      <span class="block text-sm font-semibold text-ink-900 mb-1.5">Cantidad</span>
+                      <input type="number" min="1" [max]="item.stock_quantity || 100" [ngModel]="item.quantity" (ngModelChange)="updateQuantity(item.id, $event)"
+                             class="w-28 min-h-11 px-3 rounded-xl border border-line-200 bg-white text-ink-900 focus:outline-none focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600"
+                             [attr.aria-label]="'Cantidad para ' + item.name">
+                    </label>
+                    <p class="text-xs text-ink-600">Stock disponible: {{ item.stock_quantity }}</p>
+                  </div>
+                  <div class="flex items-center justify-between md:justify-end gap-4">
+                    <div class="text-right">
+                      <p class="text-xs text-ink-600">Subtotal</p>
+                      <p class="text-lg font-bold text-ink-900">{{ formatCop(item.line_total_cop) }}</p>
+                    </div>
+                    <button type="button" (click)="removeFromCart(item.id)" class="min-h-11 px-4 rounded-xl border border-red-200 text-danger-600 font-semibold hover:bg-red-50 disabled:opacity-50" [disabled]="loading()">
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <aside class="lg:sticky lg:top-24 space-y-4" aria-label="Resumen de compra">
+          <div class="bg-white rounded-2xl border border-line-200 p-5 sm:p-6 shadow-sm">
+            <h2 class="font-display text-xl font-bold text-ink-900">Resumen</h2>
+            <div class="mt-4 space-y-3 text-sm">
+              <div class="flex justify-between text-ink-600"><span>Artículos</span><span>{{ cartItems().length }}</span></div>
+              <div class="flex justify-between text-ink-600"><span>Envío</span><span>Calculado en proceso</span></div>
+              <div class="pt-3 border-t border-line-200 flex justify-between items-center">
+                <span class="font-semibold text-ink-900">Total</span>
+                <span class="text-2xl font-bold text-ink-900">{{ formatCop(total()) }}</span>
+              </div>
+            </div>
+            <div class="mt-6 space-y-3">
+              <a href="#checkout" class="w-full min-h-11 inline-flex items-center justify-center rounded-xl bg-teal-600 text-white font-semibold hover:bg-teal-700">Continuar al checkout</a>
+              <button type="button" (click)="clearCart()" class="w-full min-h-11 rounded-xl border border-line-200 text-ink-900 font-semibold hover:bg-sand-50 disabled:opacity-50" [disabled]="loading()">Vaciar carrito</button>
+            </div>
+            <p class="text-xs text-ink-600 mt-4">El inventario y la transacción son controlados por el backend. Checkout simulado sin pasarela real.</p>
+          </div>
+        </aside>
       </div>
-    </div>
+    </ng-template>
   </ng-container>
 
-  <ng-template #emptyCart>
-    <p *ngIf="!loading()">Tu carrito de compras está vacío.</p>
-  </ng-template>
+  <section id="checkout" class="mt-10 grid lg:grid-cols-[1fr_360px] gap-6 items-start scroll-mt-24">
+    <div class="bg-white rounded-2xl border border-line-200 p-5 sm:p-6 shadow-sm">
+      <div class="mb-6">
+        <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Checkout</p>
+        <h2 class="font-display text-2xl font-bold text-ink-900 mt-2">Datos de compra</h2>
+        <p class="text-ink-600 mt-2">Completa la información requerida para confirmar tu pedido.</p>
+      </div>
 
-  <section class="checkout-section">
-    <h3>Checkout</h3>
-    <p class="item-color">El backend controla la transacción y el inventario. No se integra pasarela de pago real.</p>
-    <div class="checkout-grid">
-      <label>Nombre completo<input [(ngModel)]="buyer.full_name" name="full_name" /></label>
-      <label>Email<input [(ngModel)]="buyer.email" name="email" type="email" /></label>
-      <label>Teléfono<input [(ngModel)]="buyer.phone" name="phone" /></label>
-      <label>Dirección<textarea [(ngModel)]="buyer.address" name="address"></textarea></label>
-    </div>
-    <div *ngIf="checkoutError()" class="cart-alert error">{{ checkoutError() }}</div>
-    <button type="button" (click)="checkout()" class="checkout-button" [disabled]="checkoutLoading() || cartItems().length === 0">
-      {{ checkoutLoading() ? 'Procesando...' : 'Confirmar compra' }}
-    </button>
+      <app-ui-alert *ngIf="checkoutError()" variant="error" [title]="'Revisa la información'">{{ checkoutError() }}</app-ui-alert>
 
-    <div *ngIf="checkoutSuccess() as order" class="cart-alert success">
-      <p><strong>Compra confirmada.</strong></p>
-      <p>Pedido: {{ order.order_number }} ({{ order.id }})</p>
-      <p>Estado: {{ order.status }} | Total: {{ formatCop(order.total) }}</p>
-      <p *ngIf="!auth.isAuthenticated()">Guarda el ID y token de acceso para consultar tu pedido de invitado.</p>
-    </div>
-  </section>
+      <div class="grid sm:grid-cols-2 gap-4 mt-4">
+        <app-ui-input label="Nombre completo" [required]="true" placeholder="Tu nombre" [(ngModel)]="buyer.full_name" name="full_name"></app-ui-input>
+        <app-ui-input label="Email" [required]="true" type="email" placeholder="correo@ejemplo.com" [(ngModel)]="buyer.email" name="email"></app-ui-input>
+        <app-ui-input label="Teléfono" type="tel" placeholder="Opcional" [(ngModel)]="buyer.phone" name="phone"></app-ui-input>
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-semibold text-ink-900 mb-1.5" for="buyer-address">Dirección <span aria-hidden="true">*</span></label>
+          <textarea id="buyer-address" [(ngModel)]="buyer.address" name="address" rows="3" required
+                    class="w-full px-3 py-2.5 rounded-xl border border-line-200 bg-white text-ink-900 focus:outline-none focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600"
+                    placeholder="Dirección de entrega"></textarea>
+        </div>
+      </div>
 
-  <section class="checkout-section" *ngIf="!auth.isAuthenticated()">
-    <h3>Consultar pedido invitado</h3>
-    <div class="checkout-grid">
-      <label>ID de pedido<input [ngModel]="guestOrderLookupId()" (ngModelChange)="guestOrderLookupId.set($event)" /></label>
-      <label>Token de acceso<input [ngModel]="guestOrderLookupToken()" (ngModelChange)="guestOrderLookupToken.set($event)" /></label>
-    </div>
-    <button type="button" (click)="lookupGuestOrder()" class="checkout-button" [disabled]="guestLookupLoading()">Consultar pedido</button>
-    <div *ngIf="guestLookupError()" class="cart-alert error">{{ guestLookupError() }}</div>
-    <div *ngIf="guestLookupOrder() as g" class="cart-alert success">
-      <p>Pedido {{ g.order_number }} - {{ g.status }} - {{ formatCop(g.total) }}</p>
-    </div>
-  </section>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center">
+        <button type="button" (click)="checkout()" class="min-h-11 px-6 rounded-xl bg-ink-900 text-white font-semibold hover:bg-black/90 disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="checkoutLoading() || cartItems().length === 0">
+          {{ checkoutLoading() ? 'Procesando...' : 'Confirmar compra' }}
+        </button>
+        <p class="text-sm text-ink-600">Campos requeridos: nombre, email y dirección.</p>
+      </div>
 
-  <section class="checkout-section" *ngIf="auth.isAuthenticated()">
-    <h3>Mis pedidos</h3>
-    <button type="button" (click)="loadMyOrders()" class="clear-button" [disabled]="myOrdersLoading()">Actualizar</button>
-    <div *ngIf="myOrdersError()" class="cart-alert error">{{ myOrdersError() }}</div>
-    <div *ngIf="myOrdersLoading()" class="cart-alert">Cargando pedidos...</div>
-    <div *ngFor="let o of myOrders()" class="order-item">
-      <p><strong>{{ o.order_number }}</strong> - {{ o.status }} - {{ formatCop(o.total) }}</p>
-      <p class="item-color">{{ o.created_at | date:'medium' }}</p>
+      <div *ngIf="checkoutSuccess() as order" class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+        <p class="text-sm font-semibold text-success-600 uppercase tracking-wide">Compra confirmada</p>
+        <h3 class="font-display text-xl font-bold text-ink-900 mt-1">Pedido recibido</h3>
+        <dl class="mt-4 grid sm:grid-cols-2 gap-3 text-sm">
+          <div><dt class="text-ink-600">Número</dt><dd class="font-semibold text-ink-900">{{ order.order_number }}</dd></div>
+          <div><dt class="text-ink-600">ID</dt><dd class="font-semibold text-ink-900 break-all">{{ order.id }}</dd></div>
+          <div><dt class="text-ink-600">Estado</dt><dd class="font-semibold text-ink-900">{{ order.status }}</dd></div>
+          <div><dt class="text-ink-600">Total</dt><dd class="font-semibold text-ink-900">{{ formatCop(order.total) }}</dd></div>
+        </dl>
+        <p *ngIf="!auth.isAuthenticated()" class="text-sm text-ink-600 mt-4">Guarda el ID y token de acceso para consultar tu pedido de invitado.</p>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <section *ngIf="!auth.isAuthenticated()" class="bg-white rounded-2xl border border-line-200 p-5 shadow-sm">
+        <h3 class="font-display text-lg font-bold text-ink-900">Consultar pedido invitado</h3>
+        <p class="text-sm text-ink-600 mt-1 mb-4">Usa el ID y token de acceso del pedido.</p>
+        <div class="space-y-3">
+          <label class="block"><span class="block text-sm font-semibold text-ink-900 mb-1.5">ID de pedido</span><input [ngModel]="guestOrderLookupId()" (ngModelChange)="guestOrderLookupId.set($event)" class="w-full min-h-11 px-3 rounded-xl border border-line-200" /></label>
+          <label class="block"><span class="block text-sm font-semibold text-ink-900 mb-1.5">Token de acceso</span><input [ngModel]="guestOrderLookupToken()" (ngModelChange)="guestOrderLookupToken.set($event)" class="w-full min-h-11 px-3 rounded-xl border border-line-200" /></label>
+          <button type="button" (click)="lookupGuestOrder()" class="w-full min-h-11 rounded-xl border border-line-200 text-ink-900 font-semibold hover:bg-sand-50 disabled:opacity-50" [disabled]="guestLookupLoading()">{{ guestLookupLoading() ? 'Consultando...' : 'Consultar pedido' }}</button>
+        </div>
+        <app-ui-alert *ngIf="guestLookupError()" variant="error" class="block mt-4">{{ guestLookupError() }}</app-ui-alert>
+        <div *ngIf="guestLookupOrder() as g" class="mt-4 rounded-xl bg-sand-50 border border-line-200 p-4 text-sm">
+          <p class="font-semibold text-ink-900">{{ g.order_number }}</p>
+          <p class="text-ink-600">Estado: {{ g.status }}</p>
+          <p class="text-ink-900 font-semibold">{{ formatCop(g.total) }}</p>
+        </div>
+      </section>
+
+      <section *ngIf="auth.isAuthenticated()" class="bg-white rounded-2xl border border-line-200 p-5 shadow-sm">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div><h3 class="font-display text-lg font-bold text-ink-900">Mis pedidos</h3><p class="text-sm text-ink-600">Historial reciente de tu cuenta.</p></div>
+          <button type="button" (click)="loadMyOrders()" class="min-h-11 px-4 rounded-xl border border-line-200 text-ink-900 font-semibold hover:bg-sand-50 disabled:opacity-50" [disabled]="myOrdersLoading()">Actualizar</button>
+        </div>
+        <app-ui-alert *ngIf="myOrdersError()" variant="error">{{ myOrdersError() }}</app-ui-alert>
+        <div *ngIf="myOrdersLoading()" class="text-sm text-ink-600">Cargando pedidos...</div>
+        <div *ngIf="!myOrdersLoading() && myOrders().length === 0 && !myOrdersError()" class="text-sm text-ink-600">Aún no tienes pedidos.</div>
+        <div class="space-y-3 mt-3">
+          <div *ngFor="let o of myOrders()" class="rounded-xl bg-sand-50 border border-line-200 p-4 text-sm">
+            <div class="flex justify-between gap-3"><p class="font-semibold text-ink-900">{{ o.order_number }}</p><span class="text-teal-700 font-medium">{{ o.status }}</span></div>
+            <p class="text-ink-600">{{ o.created_at | date:'medium' }}</p>
+            <p class="font-semibold text-ink-900 mt-1">{{ formatCop(o.total) }}</p>
+          </div>
+        </div>
+      </section>
     </div>
   </section>
 </div>

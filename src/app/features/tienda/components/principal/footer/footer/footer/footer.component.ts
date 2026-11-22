@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -8,7 +8,5 @@ import { RouterModule } from '@angular/router';
   templateUrl: './footer.component.html',
 })
 export default class FooterComponent {
-
-  constructor() {}
-
+  readonly year = new Date().getFullYear();
 }

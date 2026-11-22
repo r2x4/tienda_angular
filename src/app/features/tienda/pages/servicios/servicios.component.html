@@ -1,27 +1,40 @@
-﻿<div class="container mx-auto px-4 flex-grow">
-  <main class="py-8">
-    <h2 class="text-2xl font-bold mb-6">Servicios</h2>
+﻿<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+  <header class="mb-8 max-w-3xl">
+    <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Servicios</p>
+    <h1 class="font-display text-3xl sm:text-4xl font-bold text-ink-900 mt-2">Servicios disponibles</h1>
+    <p class="text-ink-600 mt-3">Conoce los servicios activos, su precio y duración cuando están disponibles.</p>
+  </header>
 
-    <div *ngIf="loading()" class="text-center py-8 text-gray-600">Cargando servicios...</div>
-    <div *ngIf="!loading() && error()" class="text-center py-8 text-red-600">
-      <p>{{ error() }}</p>
-      <button type="button" (click)="load()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded">Reintentar</button>
-    </div>
-    <div *ngIf="!loading() && !error() && services().length === 0" class="text-center py-8 text-gray-600">No hay servicios disponibles.</div>
+  <div *ngIf="loading()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let i of [1,2,3,4,5,6]" class="bg-white rounded-2xl border border-line-200 overflow-hidden"><div class="aspect-[4/3] skeleton"></div><div class="p-5 space-y-3"><div class="h-5 skeleton w-3/4"></div><div class="h-4 skeleton"></div><div class="h-11 skeleton mt-6"></div></div></div>
+  </div>
 
-    <div *ngIf="!loading() && !error() && services().length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <div *ngFor="let service of services()" class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105">
-        <div class="h-56 overflow-hidden bg-gray-100">
-          <img [src]="service.image_url || 'assets/ropa_ropaDeportiva.jpg'" [alt]="service.name" [title]="service.name" class="w-full h-full object-cover">
-        </div>
-        <div class="p-4">
-          <h3 class="font-bold text-lg mb-2">{{ service.name }}</h3>
-          <p *ngIf="service.description" class="text-gray-600 text-sm mb-2">{{ service.description }}</p>
-          <p class="text-gray-700 font-bold">{{ formatCop(service.price_cop) }}</p>
-          <p *ngIf="service.duration_minutes !== null" class="text-sm text-gray-500 mt-1">Duración: {{ service.duration_minutes }} min</p>
-          <a [routerLink]="['/servicios', service.id]" class="mt-4 inline-block w-full text-center bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors duration-300">Ver detalle</a>
-        </div>
+  <div *ngIf="!loading() && error()" class="bg-white border border-red-200 rounded-2xl p-8 text-center">
+    <p class="text-danger-600 font-medium">{{ error() }}</p>
+    <button type="button" (click)="load()" class="mt-4 min-h-11 px-5 rounded-xl bg-ink-900 text-white font-semibold">Reintentar</button>
+  </div>
+
+  <div *ngIf="!loading() && !error() && services().length === 0" class="bg-white border border-line-200 rounded-2xl p-10 text-center">
+    <div class="mx-auto w-14 h-14 rounded-full bg-sand-50 text-teal-700 flex items-center justify-center mb-4"><i class="fas fa-calendar-xmark text-xl" aria-hidden="true"></i></div>
+    <h2 class="font-display text-xl font-bold text-ink-900">No hay servicios disponibles</h2>
+    <p class="text-ink-600 mt-2">Cuando haya servicios activos aparecerán aquí.</p>
+  </div>
+
+  <div *ngIf="!loading() && !error() && services().length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <article *ngFor="let service of services()" class="bg-white rounded-2xl border border-line-200 shadow-sm overflow-hidden flex flex-col hover:shadow-lg transition-shadow">
+      <div class="aspect-[4/3] bg-sand-50 overflow-hidden border-b border-line-200">
+        <img [src]="service.image_url || 'assets/images/public/service-training.jpg'" [alt]="service.name" [title]="service.name" loading="lazy" class="w-full h-full object-cover">
       </div>
-    </div>
-  </main>
+      <div class="p-5 flex flex-col flex-1">
+        <h2 class="font-display text-xl font-bold text-ink-900">{{ service.name }}</h2>
+        <p *ngIf="service.description" class="text-sm text-ink-600 mt-2 line-clamp-3">{{ service.description }}</p>
+        <div class="mt-4 flex items-center gap-3 flex-wrap">
+          <span class="text-lg font-bold text-ink-900">{{ formatCop(service.price_cop) }}</span>
+          <span *ngIf="service.duration_minutes !== null" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-sand-50 text-ink-600 border border-line-200">{{ service.duration_minutes }} min</span>
+        </div>
+        <a [routerLink]="['/servicios', service.id]" class="mt-auto pt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-ink-900 text-white font-semibold hover:bg-black/90">Ver detalle</a>
+      </div>
+    </article>
+  </div>
 </div>
+

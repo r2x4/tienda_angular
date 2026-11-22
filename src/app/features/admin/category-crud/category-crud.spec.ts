@@ -18,14 +18,32 @@ describe('CategoryCrudComponent', () => {
     await TestBed.configureTestingModule({ imports:[CategoryCrudComponent], providers:[{provide:AdminCategoriesApiService, useValue:api}] }).compileComponents();
   });
 
-  it('loads and creates categories via backend', () => {
-    api.create.and.returnValue(of(cat({ id:'c2' })));
+  it('loads categories on init and renders list', () => {
     const fixture = TestBed.createComponent(CategoryCrudComponent);
     fixture.detectChanges();
     expect(api.list).toHaveBeenCalled();
-    fixture.componentInstance.current.set({ name:'C', slug:'c', description:'', is_active:true });
-    fixture.componentInstance.save();
+    expect(fixture.nativeElement.textContent).toContain('Lista de Categorías');
+    expect(fixture.nativeElement.textContent).toContain('Cat');
+  });
+
+  it('creates categories via backend', () => {
+    api.create.and.returnValue(of(cat({ id:'c2' })));
+    const c = TestBed.createComponent(CategoryCrudComponent).componentInstance;
+    c.current.set({ name:'C', slug:'c', description:'', is_active:true });
+    c.save();
     expect(api.create).toHaveBeenCalledWith(jasmine.objectContaining({ name:'C', slug:'c', description:null, is_active:true }));
+  });
+
+  it('shows "Nueva categoría" action and resets to create mode', () => {
+    const fixture = TestBed.createComponent(CategoryCrudComponent);
+    fixture.detectChanges();
+    const c = fixture.componentInstance;
+    c.edit(cat());
+    expect(c.current().id).toBe('c1');
+    c.newCategory();
+    expect(c.current().id).toBeUndefined();
+    expect(c.current().name).toBe('');
+    expect(fixture.nativeElement.textContent).toContain('Nueva categoría');
   });
 
   it('edits category via PUT with contract payload', () => {

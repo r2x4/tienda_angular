@@ -1,0 +1,25 @@
+﻿$ErrorActionPreference='Stop'
+$base='src/assets/images/catalog-candidates'
+$manifest=@(
+  @{cat='calzado';n=1;file='candidate-01.webp';img='https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=2;file='candidate-02.webp';img='https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=3;file='candidate-03.webp';img='https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=4;file='candidate-04.webp';img='https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=5;file='candidate-05.webp';img='https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=6;file='candidate-06.webp';img='https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=7;file='candidate-07.webp';img='https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=8;file='candidate-08.webp';img='https://images.unsplash.com/photo-1605348532760-6753d2c43329?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=9;file='candidate-09.webp';img='https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=10;file='candidate-10.webp';img='https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=11;file='candidate-11.webp';img='https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=12;file='candidate-12.webp';img='https://images.unsplash.com/photo-1603808033192-082d6919d3e1?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=13;file='candidate-13.webp';img='https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=14;file='candidate-14.webp';img='https://images.unsplash.com/photo-1512374382149-233c42b6a83b?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=15;file='candidate-15.webp';img='https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=16;file='candidate-16.webp';img='https://images.unsplash.com/photo-1605408499391-6368c628ef42?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=17;file='candidate-17.webp';img='https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=18;file='candidate-18.webp';img='https://images.unsplash.com/photo-1518002171953-a080ee817e1f?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=19;file='candidate-19.webp';img='https://images.unsplash.com/photo-1520316587275-5e4f06f355e6?auto=format&fit=crop&w=1200&q=80&fm=webp'},
+  @{cat='calzado';n=20;file='candidate-20.webp';img='https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1200&q=80&fm=webp'}
+)
+foreach($m in $manifest){ $out=Join-Path $base "$($m.cat)/$($m.file)"; Invoke-WebRequest -Uri $m.img -OutFile $out }

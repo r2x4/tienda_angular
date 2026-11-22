@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     cors_allow_credentials: bool = Field(default=False, alias="CORS_ALLOW_CREDENTIALS")
     cors_allowed_methods: str = Field(default="GET,POST,PUT,PATCH,DELETE,OPTIONS", alias="CORS_ALLOWED_METHODS")
     cors_allowed_headers: str = Field(
-        default="Authorization,Content-Type,Accept,Origin,X-Requested-With",
+        default="Authorization,Content-Type,Accept,Origin,X-Requested-With,X-Cart-Token,Idempotency-Key,X-Order-Access-Token",
         alias="CORS_ALLOWED_HEADERS",
     )
 

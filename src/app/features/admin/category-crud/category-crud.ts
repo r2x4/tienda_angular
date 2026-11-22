@@ -34,6 +34,7 @@ export class CategoryCrudComponent implements OnInit {
     });
   }
   edit(cat: CategoryRead): void { this.success.set(''); this.error.set(''); this.current.set({ id:cat.id, name:cat.name, slug:cat.slug, description:cat.description ?? '', is_active:cat.is_active }); }
+  newCategory(): void { this.success.set(''); this.error.set(''); this.current.set(this.empty()); }
   save(): void {
     if (this.saving()) return;
     this.success.set(''); this.error.set('');

@@ -133,6 +133,36 @@ describe('ProductCrudComponent (Fase 10.3)', () => {
     }));
   });
 
+  it('validates numeric price and stock fields (including numeric input values)', () => {
+    const c = TestBed.createComponent(ProductCrudComponent).componentInstance;
+    c.form = { name: 'N', slug: 'n', description: '', price_cop: 1500 as any, stock_quantity: 3 as any, category_id: 'c1', is_active: true, images: [] };
+    expect((c as any).validate(c.form)).toBeNull();
+
+    c.form = { name: 'N', slug: 'n', description: '', price_cop: 0 as any, stock_quantity: 0 as any, category_id: 'c1', is_active: true, images: [] };
+    expect((c as any).validate(c.form)).toBeNull();
+
+    c.form = { name: 'N', slug: 'n', description: '', price_cop: -1 as any, stock_quantity: 1 as any, category_id: 'c1', is_active: true, images: [] };
+    expect((c as any).validate(c.form)).toBe('Precio COP inválido.');
+
+    c.form = { name: 'N', slug: 'n', description: '', price_cop: 1000 as any, stock_quantity: -1 as any, category_id: 'c1', is_active: true, images: [] };
+    expect((c as any).validate(c.form)).toBe('Stock inválido.');
+
+    c.form = { name: 'N', slug: 'n', description: '', price_cop: 'abc' as any, stock_quantity: 1 as any, category_id: 'c1', is_active: true, images: [] };
+    expect((c as any).validate(c.form)).toBe('Precio COP inválido.');
+
+    c.form = { name: 'N', slug: 'n', description: '', price_cop: 1000 as any, stock_quantity: 1.5 as any, category_id: 'c1', is_active: true, images: [] };
+    expect((c as any).validate(c.form)).toBe('Stock inválido.');
+  });
+
+  it('saves when stock_quantity comes as number from input binding', () => {
+    productsApi.create.and.returnValue(of(prod));
+    const c = TestBed.createComponent(ProductCrudComponent).componentInstance;
+    c.form = { name: 'N', slug: 'n', description: '', price_cop: '1500', stock_quantity: 3 as any, category_id: 'c1', is_active: true, images: [] };
+    c.save();
+    expect(productsApi.create).toHaveBeenCalledWith(jasmine.objectContaining({ price_cop: '1500', stock_quantity: 3 }));
+    expect(c.error()).toBe('');
+  });
+
   it('resolves relative and keeps absolute URLs', () => {
     const c = TestBed.createComponent(ProductCrudComponent).componentInstance;
     expect(c.resolveImageUrl('/media/images/a.webp')).toBe('http://localhost:8000/media/images/a.webp');

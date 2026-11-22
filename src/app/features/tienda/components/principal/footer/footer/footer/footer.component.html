@@ -1,50 +1,46 @@
-<!-- footer.component.html -->
-<footer class="bg-gray-800 text-white py-8 mt-12 w-full">
-  <div class="container mx-auto px-4">
-    <div class="text-center">
-
-      <!-- Título -->
-      <h3 class="text-xl md:text-2xl font-bold mb-4">Sport-Five</h3>
-
-      <!-- Descripción -->
-      <p class="text-gray-300 mb-4 text-sm md:text-base">
-        La mejor tienda online con las últimas tendencias
-      </p>
-
-      <!-- Redes sociales CORREGIDAS -->
-      <div class="flex justify-center space-x-4 md:space-x-6 mb-6">
-        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="text-xl md:text-2xl hover:text-blue-400 transition-colors" aria-label="Facebook">
-          <i class="fab fa-facebook"></i>
-          <span class="sr-only">Facebook</span>
-        </a>
-        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="text-xl md:text-2xl hover:text-pink-500 transition-colors" aria-label="Instagram">
-          <i class="fab fa-instagram"></i>
-          <span class="sr-only">Instagram</span>
-        </a>
-        <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" class="text-xl md:text-2xl hover:text-blue-300 transition-colors" aria-label="Twitter">
-          <i class="fab fa-twitter"></i>
-          <span class="sr-only">Twitter</span>
-        </a>
-        <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="text-xl md:text-2xl hover:text-red-500 transition-colors" aria-label="YouTube">
-          <i class="fab fa-youtube"></i>
-          <span class="sr-only">YouTube</span>
-        </a>
+﻿<footer class="bg-ink-900 text-white mt-16">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-amber-500"><i class="fas fa-bag-shopping" aria-hidden="true"></i></span>
+          <span class="font-display text-2xl font-bold">La tienda</span>
+        </div>
+        <p class="text-sm text-slate-300 leading-6 max-w-sm">Una experiencia moderna para explorar productos y servicios con claridad, confianza y cercanía.</p>
       </div>
 
-      <!-- Enlaces -->
-      <div class="flex flex-wrap justify-center gap-4 md:gap-6 md:space-x-8 mb-6 text-sm md:text-base">
-        <a routerLink="/nosotros" class="hover:text-blue-400 transition-colors">Nosotros</a>
-        <a routerLink="/contacto" class="hover:text-blue-400 transition-colors">Contacto</a>
-        <a routerLink="/reseñas" class="hover:text-blue-400 transition-colors">Reseñas</a>
+      <div>
+        <h3 class="text-sm font-bold tracking-wide text-amber-500 uppercase mb-4">Tienda</h3>
+        <ul class="space-y-3 text-sm text-slate-200">
+          <li><a routerLink="/inicial" class="hover:text-white">Inicio</a></li>
+          <li><a routerLink="/calzado" class="hover:text-white">Calzado</a></li>
+          <li><a routerLink="/implementos" class="hover:text-white">Implementos</a></li>
+          <li><a routerLink="/ropa" class="hover:text-white">Ropa</a></li>
+          <li><a routerLink="/suplementos" class="hover:text-white">Suplementos</a></li>
+        </ul>
       </div>
 
-      <!-- Copyright -->
-      <div class="border-t border-gray-700 pt-4">
-        <p class="text-gray-400 text-xs md:text-sm">
-          &copy; 2025 Sport-Five. Todos los derechos reservados.
-        </p>
+      <div>
+        <h3 class="text-sm font-bold tracking-wide text-amber-500 uppercase mb-4">Servicios</h3>
+        <ul class="space-y-3 text-sm text-slate-200">
+          <li><a routerLink="/servicios" class="hover:text-white">Servicios</a></li>
+          <li><a routerLink="/cart" class="hover:text-white">Carrito</a></li>
+          <li><a routerLink="/contacto" class="hover:text-white">Contacto</a></li>
+        </ul>
       </div>
 
+      <div>
+        <h3 class="text-sm font-bold tracking-wide text-amber-500 uppercase mb-4">Conócenos</h3>
+        <ul class="space-y-3 text-sm text-slate-200">
+          <li><a routerLink="/nosotros" class="hover:text-white">Nosotros</a></li>
+          <li><a routerLink="/reseñas" class="hover:text-white">Reseñas</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 justify-between text-xs sm:text-sm text-slate-400">
+      <p>© {{ year }} La tienda. Denominación provisional.</p>
+      <p>Checkout simulado para validación funcional.</p>
     </div>
   </div>
 </footer>

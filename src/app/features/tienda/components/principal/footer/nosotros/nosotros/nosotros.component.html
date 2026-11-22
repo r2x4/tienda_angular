@@ -1,47 +1,45 @@
-<div class="p-8">
-  <h1 class="text-2xl font-bold text-center">Sport-Five</h1>
-  <br>
-  <div class="container max-w-4xl mx-auto space-y-8">
-    <!-- Contenedor 1: Misión -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <div class="flex flex-col md:flex-row items-center">
-            <div class="md:w-2/3 p-4">
-                <h2 class="text-2xl font-bold text-blue-800 mb-3">Nuestra Misión</h2>
-                <p class="text-gray-700">Proveer a nuestros clientes con los mejores productos deportivos, ofreciendo calzado, implementos, suplementos y ropa deportiva de la más alta calidad para mejorar su rendimiento y experiencia deportiva.</p>
-            </div>
-            <div class="md:w-1/3 p-4 flex justify-center md:justify-end">
-                <img src="https://cdn-icons-png.flaticon.com/512/1006/1006555.png" alt="Misión" class="w-24 h-24 object-contain">
-            </div>
-        </div>
+﻿<div class="bg-sand-50 min-h-screen py-10 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-10">
+      <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Conócenos</p>
+      <h1 class="font-display text-4xl font-bold text-ink-900 mt-2">La tienda</h1>
+      <p class="text-ink-600 mt-3 max-w-2xl mx-auto">Una propuesta enfocada en claridad, confianza y una experiencia de compra moderna.</p>
     </div>
 
-    <!-- Contenedor 2: Visión -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <div class="flex flex-col md:flex-row-reverse items-center">
-            <div class="md:w-2/3 p-4">
-                <h2 class="text-2xl font-bold text-green-800 mb-3">Nuestra Visión</h2>
-                <p class="text-gray-700">Ser la tienda deportiva líder en el mercado, reconocida por nuestra excelencia en servicio al cliente, variedad de productos y compromiso con la comunidad deportiva.</p>
-            </div>
-            <div class="md:w-1/3 p-4 flex justify-center md:justify-start">
-                <img src="https://cdn-icons-png.flaticon.com/512/1006/1006563.png" alt="Visión" class="w-24 h-24 object-contain">
-            </div>
+    <div class="space-y-6">
+      <article class="bg-white rounded-2xl border border-line-200 shadow-sm overflow-hidden">
+        <div class="grid md:grid-cols-2">
+          <div class="p-8 flex flex-col justify-center">
+            <h2 class="font-display text-2xl font-bold text-ink-900 mb-3">Nuestra misión</h2>
+            <p class="text-ink-600 leading-7">Ofrecer productos y servicios deportivos con una experiencia clara y confiable, facilitando decisiones de compra informadas y acceso a un catálogo real.</p>
+          </div>
+          <img src="assets/images/public/about-mission.jpg" alt="Persona corriendo al aire libre" loading="lazy" class="w-full h-64 md:h-full object-cover">
         </div>
+      </article>
+
+      <article class="bg-white rounded-2xl border border-line-200 shadow-sm overflow-hidden">
+        <div class="grid md:grid-cols-2">
+          <img src="assets/images/public/about-vision.jpg" alt="Entrenamiento funcional en gimnasio" loading="lazy" class="w-full h-64 md:h-full object-cover md:order-1 order-2">
+          <div class="p-8 flex flex-col justify-center md:order-2 order-1">
+            <h2 class="font-display text-2xl font-bold text-ink-900 mb-3">Nuestra visión</h2>
+            <p class="text-ink-600 leading-7">Consolidarnos como una tienda digital cercana y moderna, donde la tecnología y el diseño hagan simple encontrar lo que necesitas para tu actividad física.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="bg-white rounded-2xl border border-line-200 shadow-sm overflow-hidden">
+        <div class="grid md:grid-cols-2">
+          <div class="p-8 flex flex-col justify-center">
+            <h2 class="font-display text-2xl font-bold text-ink-900 mb-3">Lo que nos guía</h2>
+            <p class="text-ink-600 leading-7">Priorizamos la claridad de la información, la utilidad del catálogo, la disponibilidad visible y una experiencia responsive que funcione en cualquier dispositivo.</p>
+          </div>
+          <img src="assets/images/public/about-values.jpg" alt="Equipo entrenando en gimnasio" loading="lazy" class="w-full h-64 md:h-full object-cover">
+        </div>
+      </article>
     </div>
 
-    <!-- Contenedor 3: Por qué somos los mejores -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <div class="flex flex-col md:flex-row items-center">
-            <div class="md:w-2/3 p-4">
-                <h2 class="text-2xl font-bold text-purple-800 mb-3">¿Por qué somos los mejores del mercado?</h2>
-                <p class="text-gray-700">Ofrecemos productos de primeras marcas, precios competitivos, envíos rápidos y asesoramiento especializado. Nuestra pasión por el deporte se refleja en cada aspecto de nuestro servicio.</p>
-            </div>
-            <div class="md:w-1/3 p-4 flex justify-center md:justify-end">
-                <img src="https://cdn-icons-png.flaticon.com/512/9295/9295413.png" alt="Los mejores" class="w-24 h-24 object-contain">
-            </div>
-        </div>
+    <div class="text-center mt-10">
+      <button (click)="goBack()" class="min-h-11 px-6 rounded-xl bg-ink-900 text-white font-semibold hover:bg-black/90">Volver al inicio</button>
     </div>
-</div>
-  <button (click)="goBack()" class="mt-4 inline-block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-    Volver
-  </button>
+  </div>
 </div>

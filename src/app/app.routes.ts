@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/components/main-layout/main-layout.component';
 import { AdminLayoutComponent } from './core/components/admin-layout/admin-layout';
 import { adminGuard } from './core/auth/guards/auth.guards';
@@ -106,6 +106,11 @@ export const routes: Routes = [
         data: { title: 'Detalle de servicio' }
       },
       {
+        path: 'productos/:id',
+        loadComponent: () => import('./features/tienda/pages/productos/detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent),
+        data: { title: 'Detalle de producto' }
+      },
+      {
         path: 'cart',
         loadComponent: () => import('./features/tienda/pages/cart-page/cart-page').then(m => m.CartPageComponent),
         data: { title: 'Carrito' }
@@ -117,3 +122,4 @@ export const routes: Routes = [
     redirectTo: 'inicial',
   },
 ];
+

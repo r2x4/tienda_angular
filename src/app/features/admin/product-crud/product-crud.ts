@@ -72,7 +72,9 @@ export class ProductCrudComponent implements OnInit {
     this.saving.set(true);
     this.uploadPendingImages(this.form).pipe(
       switchMap((images) => {
-        const payloadBase = { category_id: this.form.category_id, name: this.form.name.trim(), slug: this.form.slug.trim() || undefined, description: this.form.description.trim() || null, price_cop: this.form.price_cop.trim(), stock_quantity: Number(this.form.stock_quantity), is_active: this.form.is_active, images };
+        const price_cop = String(this.form.price_cop as unknown).trim();
+        const stock_quantity = Number(this.form.stock_quantity as unknown);
+        const payloadBase = { category_id: this.form.category_id, name: this.form.name.trim(), slug: this.form.slug.trim() || undefined, description: this.form.description.trim() || null, price_cop, stock_quantity, is_active: this.form.is_active, images };
         return this.form.id ? this.productsApi.update(this.form.id, payloadBase as ProductUpdate) : this.productsApi.create(payloadBase as ProductCreate);
       }),
       finalize(() => this.saving.set(false))
@@ -117,8 +119,17 @@ export class ProductCrudComponent implements OnInit {
   private validate(form: ProductForm): string | null {
     if (!form.name.trim()) return 'El nombre es obligatorio.';
     if (!form.category_id) return 'La categoría es obligatoria.';
-    if (!form.price_cop.trim() || !Number.isFinite(Number(form.price_cop)) || Number(form.price_cop) < 0) return 'Precio COP inválido.';
-    if (!form.stock_quantity.trim() || !Number.isInteger(Number(form.stock_quantity)) || Number(form.stock_quantity) < 0) return 'Stock inválido.';
+
+    const priceRaw = form.price_cop as unknown;
+    const priceStr = typeof priceRaw === 'number' ? String(priceRaw) : String(priceRaw ?? '').trim();
+    const price = Number(priceStr);
+    if (!priceStr || !Number.isFinite(price) || price < 0) return 'Precio COP inválido.';
+
+    const stockRaw = form.stock_quantity as unknown;
+    const stockStr = typeof stockRaw === 'number' ? String(stockRaw) : String(stockRaw ?? '').trim();
+    const stock = Number(stockStr);
+    if (!stockStr || !Number.isInteger(stock) || stock < 0) return 'Stock inválido.';
+
     if (form.images.length && !form.images.some(i => i.is_primary)) return 'Selecciona una imagen principal.';
     if (form.images.some(i => !i.url && !i.file)) return 'Cada imagen debe tener archivo o URL válida.';
     return null;

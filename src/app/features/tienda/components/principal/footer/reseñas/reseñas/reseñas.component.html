@@ -1,45 +1,37 @@
-<div class="bg-gray-100 min-h-screen py-8 px-4">
-    <div class="max-w-6xl mx-auto">
-        <!-- Blogs Section -->
-        <section class="container mx-auto px-4 py-12">
-            <h1 class="text-4xl font-bold text-center text-dark mb-10 relative pb-3">
-                Reseñas
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></span>
-            </h1>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Blog Card 1 -->
-                <div class="blog-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl">
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNwb3J0cyUyMGdlYXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=80" alt="Aditamentos Deportivos" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-dark mb-2">Aditamentos Deportivos</h3>
-                        <p class="text-gray-700 mb-4">Son objetos, prendas y accesorios que requiere una persona para practicar o desarrollar actividades físicas de tipo deportivo...</p>
-                    </div>
-                </div>
-
-                <!-- Blog Card 2 -->
-                <div class="blog-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl">
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHNuZWFrZXJzfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80" alt="Calzado Deportivo" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-dark mb-2">Calzado Deportivo</h3>
-                        <p class="text-gray-700 mb-4">El calzado deportivo sirve para proteger el pie de roces y abrasiones, ejercer un efecto amortiguador entre éste y el suelo...</p>
-                    </div>
-                </div>
-
-                <!-- Blog Card 3 -->
-                <div class="blog-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl">
-                    <img src="https://images.unsplash.com/photo-1506629905877-52a5ca6d63b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c3BvcnRzJTIwd2VhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Ropa Deportiva" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-dark mb-2">Ropa Deportiva</h3>
-                        <p class="text-gray-700 mb-4">La ropa deportiva debe de ser capaz de reducir gran parte del impacto generado al realizar una actividad física...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <div class="text-center mt-8">
-            <button (click)="goBack()" class="inline-block bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                Volver
-            </button>
-        </div>
+﻿<div class="bg-sand-50 min-h-screen py-10 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-10">
+      <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Reseñas</p>
+      <h1 class="font-display text-4xl font-bold text-ink-900 mt-2">Guías y contexto</h1>
+      <p class="text-ink-600 mt-3 max-w-2xl mx-auto">Contenido informativo para ayudarte a conocer mejor categorías y elementos deportivos.</p>
     </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <article class="bg-white rounded-2xl border border-line-200 shadow-sm overflow-hidden">
+        <img src="assets/images/public/category-implementos.jpg" alt="Implementos deportivos" loading="lazy" class="w-full h-48 object-cover">
+        <div class="p-6">
+          <h2 class="font-display text-xl font-bold text-ink-900 mb-2">Implementos deportivos</h2>
+          <p class="text-ink-600 text-sm leading-6">Los implementos adecuados ayudan a entrenar con mayor seguridad, constancia y comodidad según la actividad que practiques.</p>
+        </div>
+      </article>
+      <article class="bg-white rounded-2xl border border-line-200 shadow-sm overflow-hidden">
+        <img src="assets/images/public/category-calzado.jpg" alt="Calzado deportivo" loading="lazy" class="w-full h-48 object-cover">
+        <div class="p-6">
+          <h2 class="font-display text-xl font-bold text-ink-900 mb-2">Calzado deportivo</h2>
+          <p class="text-ink-600 text-sm leading-6">Un buen calzado puede aportar soporte, amortiguación y estabilidad, factores importantes para el rendimiento y el cuidado personal.</p>
+        </div>
+      </article>
+      <article class="bg-white rounded-2xl border border-line-200 shadow-sm overflow-hidden">
+        <img src="assets/images/public/category-ropa.jpg" alt="Ropa deportiva" loading="lazy" class="w-full h-48 object-cover">
+        <div class="p-6">
+          <h2 class="font-display text-xl font-bold text-ink-900 mb-2">Ropa deportiva</h2>
+          <p class="text-ink-600 text-sm leading-6">La ropa deportiva adecuada favorece la movilidad y comodidad durante la actividad física, acompañando cada movimiento.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="text-center mt-10">
+      <button (click)="goBack()" class="min-h-11 px-6 rounded-xl bg-ink-900 text-white font-semibold hover:bg-black/90">Volver al inicio</button>
+    </div>
+  </div>
 </div>

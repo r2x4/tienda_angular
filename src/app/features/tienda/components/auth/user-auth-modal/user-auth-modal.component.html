@@ -1,65 +1,52 @@
-<div class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" *ngIf="true">
-  <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 relative">
-    <!-- X fuera del contenido, posicionada absolutamente -->
-    <button class="absolute -top-0.5 -right-0.5 z-20 w-8 h-8 flex items-center justify-center bg-transparent text-dark-300 hover:bg-transparent font-bold text-xl"
-            (click)="onClose()">
-      &times;
-    </button>
-
-    <div class="tabs">
-      <button [class.active]="showLogin" (click)="showLogin = true">Iniciar Sesión</button>
-      <button [class.active]="!showLogin" (click)="showLogin = false">Registrarse</button>
+﻿<div class="fixed inset-0 z-[80] bg-ink-900/50 backdrop-blur-sm flex items-center justify-center p-4" (click)="onClose()">
+  <div #dialogPanel role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" tabindex="-1"
+       class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-line-200 overflow-hidden" (click)="$event.stopPropagation()">
+    <div class="px-6 py-5 border-b border-line-200 flex items-start justify-between gap-4">
+      <div>
+        <p class="text-sm font-semibold text-teal-700">La tienda</p>
+        <h2 id="auth-modal-title" class="font-display text-2xl font-bold text-ink-900">{{ showLogin ? 'Inicia sesión' : 'Crea tu cuenta' }}</h2>
+        <p class="text-sm text-ink-600 mt-1">Accede para comprar con mayor facilidad y consultar tus pedidos.</p>
+      </div>
+      <button type="button" class="min-w-11 min-h-11 rounded-xl text-ink-600 hover:bg-sand-50 hover:text-ink-900" aria-label="Cerrar" (click)="onClose()">✕</button>
     </div>
 
-    <p *ngIf="errorMessage()" class="text-sm text-red-600 px-4 pb-2">{{ errorMessage() }}</p>
-    <p *ngIf="successMessage()" class="text-sm text-green-600 px-4 pb-2">{{ successMessage() }}</p>
+    <div class="p-6">
+      <div class="grid grid-cols-2 gap-2 p-1 bg-sand-50 rounded-xl mb-5" role="tablist" aria-label="Opciones de autenticación">
+        <button type="button" role="tab" [attr.aria-selected]="showLogin" class="min-h-11 rounded-lg text-sm font-semibold" [ngClass]="showLogin ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-600'" (click)="toggleForm(true)">Iniciar sesión</button>
+        <button type="button" role="tab" [attr.aria-selected]="!showLogin" class="min-h-11 rounded-lg text-sm font-semibold" [ngClass]="!showLogin ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-600'" (click)="toggleForm(false)">Registrarse</button>
+      </div>
 
-    <!-- Login Form -->
-    <form *ngIf="showLogin" (ngSubmit)="onLogin()">
-      <div class="form-group">
-        <label for="loginIdentifier">Correo o Usuario</label>
-        <input type="text" id="loginIdentifier" [(ngModel)]="loginData.identifier" name="loginIdentifier" required>
-      </div>
-      <div class="form-group">
-        <label for="loginPassword">Contraseña</label>
-        <input type="password" id="loginPassword" [(ngModel)]="loginData.password" name="loginPassword" required>
-      </div>
-      <button type="submit" [disabled]="loading()">{{ loading() ? 'Ingresando...' : 'Iniciar Sesión' }}</button>
-    </form>
+      <p *ngIf="errorMessage()" class="mb-4 rounded-xl bg-red-50 text-danger-600 px-4 py-3 text-sm" role="alert">{{ errorMessage() }}</p>
+      <p *ngIf="successMessage()" class="mb-4 rounded-xl bg-emerald-50 text-success-600 px-4 py-3 text-sm" aria-live="polite">{{ successMessage() }}</p>
 
-    <!-- Register Form -->
-    <form *ngIf="!showLogin" (ngSubmit)="onRegister()">
-      <div class="form-scroll-area max-h-80 overflow-y-auto">
-        <div class="form-group">
-          <label for="registerName">Nombre</label>
-          <input type="text" id="registerName" [(ngModel)]="registerData.name" name="registerName" required>
+      <form *ngIf="showLogin" (ngSubmit)="onLogin()" class="space-y-4">
+        <label class="block text-sm font-semibold text-ink-900">Correo o usuario
+          <input type="text" name="loginIdentifier" [(ngModel)]="loginData.identifier" required autocomplete="username"
+                 class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200 bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 outline-none">
+        </label>
+        <label class="block text-sm font-semibold text-ink-900">Contraseña
+          <input type="password" name="loginPassword" [(ngModel)]="loginData.password" required autocomplete="current-password"
+                 class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200 bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 outline-none">
+        </label>
+        <button type="submit" [disabled]="loading()" class="w-full min-h-11 rounded-xl bg-ink-900 text-white font-semibold hover:bg-black/90 disabled:opacity-60">{{ loading() ? 'Ingresando...' : 'Iniciar sesión' }}</button>
+      </form>
+
+      <form *ngIf="!showLogin" (ngSubmit)="onRegister()" class="space-y-4">
+        <div class="max-h-[50vh] overflow-y-auto pr-1 space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block text-sm font-semibold text-ink-900">Nombre<input name="registerName" [(ngModel)]="registerData.name" required class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200"></label>
+            <label class="block text-sm font-semibold text-ink-900">Apellido<input name="registerLastName" [(ngModel)]="registerData.lastName" required class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200"></label>
+          </div>
+          <label class="block text-sm font-semibold text-ink-900">Correo electrónico<input type="email" name="registerEmail" [(ngModel)]="registerData.email" required autocomplete="email" class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200"></label>
+          <label class="block text-sm font-semibold text-ink-900">Usuario (opcional)<input name="registerUsername" [(ngModel)]="registerData.username" autocomplete="username" class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200"></label>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block text-sm font-semibold text-ink-900">Teléfono<input name="registerPhone" [(ngModel)]="registerData.phone" class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200"></label>
+            <label class="block text-sm font-semibold text-ink-900">Ciudad<input name="registerCity" [(ngModel)]="registerData.city" class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200"></label>
+          </div>
+          <label class="block text-sm font-semibold text-ink-900">Contraseña<input type="password" name="registerPassword" [(ngModel)]="registerData.password" required autocomplete="new-password" class="mt-1 w-full min-h-11 px-3 rounded-xl border border-line-200"></label>
         </div>
-        <div class="form-group">
-          <label for="registerLastName">Apellido</label>
-          <input type="text" id="registerLastName" [(ngModel)]="registerData.lastName" name="registerLastName" required>
-        </div>
-        <div class="form-group">
-          <label for="registerEmail">Correo Electrónico</label>
-          <input type="email" id="registerEmail" [(ngModel)]="registerData.email" name="registerEmail" required>
-        </div>
-        <div class="form-group">
-          <label for="registerUsername">Usuario (opcional)</label>
-          <input type="text" id="registerUsername" [(ngModel)]="registerData.username" name="registerUsername">
-        </div>
-        <div class="form-group">
-          <label for="registerPhone">Teléfono</label>
-          <input type="tel" id="registerPhone" [(ngModel)]="registerData.phone" name="registerPhone">
-        </div>
-        <div class="form-group">
-          <label for="registerCity">Ciudad</label>
-          <input type="text" id="registerCity" [(ngModel)]="registerData.city" name="registerCity">
-        </div>
-        <div class="form-group">
-          <label for="registerPassword">Contraseña</label>
-          <input type="password" id="registerPassword" [(ngModel)]="registerData.password" name="registerPassword" required>
-        </div>
-      </div>
-      <button type="submit" [disabled]="loading()">{{ loading() ? 'Registrando...' : 'Registrarse' }}</button>
-    </form>
+        <button type="submit" [disabled]="loading()" class="w-full min-h-11 rounded-xl bg-teal-600 text-white font-semibold hover:bg-teal-700 disabled:opacity-60">{{ loading() ? 'Registrando...' : 'Crear cuenta' }}</button>
+      </form>
+    </div>
   </div>
 </div>

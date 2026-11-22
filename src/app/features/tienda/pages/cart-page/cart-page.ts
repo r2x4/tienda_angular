@@ -1,17 +1,19 @@
 ﻿import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { AuthSessionService } from '../../../../core/auth/services/auth-session.service';
 import { normalizeApiError } from '../../../../core/api/api-error';
 import { BuyerInfo, OrderRead } from '../../models/cart.models';
 import { formatCop } from '../../models/catalog-view.models';
+import { UiAlertComponent, UiEmptyStateComponent, UiInputComponent } from '../../../../shared/ui';
 
 @Component({
   selector: 'app-cart-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, UiAlertComponent, UiEmptyStateComponent, UiInputComponent],
   templateUrl: './cart-page.html',
   styleUrls: ['./cart-page.css']
 })

@@ -6,20 +6,26 @@
   <div *ngIf="success()" class="success-message">{{ success() }}</div>
   <div class="grid-container">
     <div class="card">
-      <h2>{{ current().id ? 'Editar Categoría' : 'Agregar Nueva Categoría' }}</h2>
+      <div class="card-header">
+        <h2>{{ current().id ? 'Editar Categoría' : 'Nueva categoría' }}</h2>
+        <button *ngIf="current().id" type="button" (click)="newCategory()" class="btn-secondary">Nueva categoría</button>
+      </div>
       <form (ngSubmit)="save()">
         <div class="form-group"><label>Nombre<input name="name" [(ngModel)]="current().name" required></label></div>
         <div class="form-group"><label>Slug<input name="slug" [(ngModel)]="current().slug"></label></div>
         <div class="form-group"><label>Descripción<textarea name="description" [(ngModel)]="current().description"></textarea></label></div>
         <div class="form-group"><label><input type="checkbox" name="is_active" [(ngModel)]="current().is_active"> Activa</label></div>
         <div class="button-group">
-          <button type="submit" class="btn-primary" [disabled]="saving()">{{ current().id ? 'Actualizar' : 'Guardar Nuevo' }}</button>
-          <button type="button" (click)="clear()" class="btn-secondary">Limpiar</button>
+          <button type="submit" class="btn-primary" [disabled]="saving()">{{ saving() ? 'Guardando...' : (current().id ? 'Actualizar' : 'Crear categoría') }}</button>
+          <button type="button" (click)="newCategory()" class="btn-secondary">{{ current().id ? 'Cancelar edición' : 'Limpiar' }}</button>
         </div>
       </form>
     </div>
     <div class="list-container">
-      <h2>Lista de Categorías</h2>
+      <div class="list-header">
+        <h2>Lista de Categorías</h2>
+        <button type="button" (click)="newCategory()" class="btn-primary">Nueva categoría</button>
+      </div>
       <table>
         <thead><tr><th>Nombre</th><th>Slug</th><th>Activa</th><th>Acciones</th></tr></thead>
         <tbody>

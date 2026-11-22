@@ -1,56 +1,120 @@
-<!-- inicial.component.html -->
-<div class="relative w-full max-w-4xl mx-auto mt-4 shadow-lg rounded-lg" data-carousel="slide">
-  <!-- Carousel wrapper -->
-  <div class="relative h-96 overflow-hidden rounded-lg bg-gray-500">
-    <div *ngFor="let image of images; let i = index" 
-         [class.hidden]="currentIndex !== i" 
-         class="duration-700 ease-in-out flex items-center justify-center h-full">
-      <img [src]="image.src" class="h-full w-auto object-contain" [alt]="image.alt">
+﻿<section class="bg-sand-50">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+    <div class="grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <p class="text-sm font-semibold tracking-wide uppercase text-teal-700 mb-3">La tienda</p>
+        <h1 class="font-display text-4xl sm:text-5xl font-bold text-ink-900 leading-tight">Claridad que invita a comprar.</h1>
+        <p class="mt-5 text-lg text-ink-600 max-w-xl">Explora productos y servicios con una experiencia moderna, confiable y fácil de usar, conectada al catálogo real.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a routerLink="/calzado" class="min-h-11 px-6 rounded-xl bg-ink-900 text-white font-semibold inline-flex items-center justify-center hover:bg-black/90">Explorar productos</a>
+          <a routerLink="/servicios" class="min-h-11 px-6 rounded-xl border border-line-200 bg-white text-ink-900 font-semibold inline-flex items-center justify-center hover:bg-sand-50">Ver servicios</a>
+        </div>
+        <div class="mt-8 grid grid-cols-3 gap-4 max-w-lg">
+          <div class="bg-white border border-line-200 rounded-xl p-4"><p class="text-2xl font-bold text-teal-700">Real</p><p class="text-xs text-ink-600 mt-1">Catálogo conectado</p></div>
+          <div class="bg-white border border-line-200 rounded-xl p-4"><p class="text-2xl font-bold text-teal-700">COP</p><p class="text-xs text-ink-600 mt-1">Precios claros</p></div>
+          <div class="bg-white border border-line-200 rounded-xl p-4"><p class="text-2xl font-bold text-teal-700">Fácil</p><p class="text-xs text-ink-600 mt-1">Compra guiada</p></div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="aspect-[4/3] rounded-3xl overflow-hidden border border-line-200 bg-white shadow-lg">
+          <img *ngIf="images.length" [src]="images[currentIndex()].src" [alt]="images[currentIndex()].alt" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2" *ngIf="images.length > 1">
+          <button type="button" (click)="prev()" class="min-w-11 min-h-11 rounded-full bg-white/90 border border-line-200 text-ink-900" aria-label="Imagen anterior"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+          <button *ngFor="let img of images; let i = index" type="button" (click)="goTo(i)" class="w-2.5 h-2.5 rounded-full" [ngClass]="currentIndex() === i ? 'bg-teal-600' : 'bg-white/80 border border-line-200'" [attr.aria-label]="'Ir a imagen ' + (i+1)"></button>
+          <button type="button" (click)="next()" class="min-w-11 min-h-11 rounded-full bg-white/90 border border-line-200 text-ink-900" aria-label="Imagen siguiente"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
     </div>
   </div>
-  <!-- Slider indicators -->
-  <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-    <button *ngFor="let image of images; let i = index" 
-            (click)="currentIndex = i" 
-            type="button" 
-            class="w-3 h-3 rounded-full" 
-            [class.bg-white]="currentIndex === i" 
-            [class.bg-gray-500]="currentIndex !== i"></button>
-  </div>
-  <!-- Slider controls -->
-  <button (click)="prev()" type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
-    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
-        <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-        </svg>
-        <span class="sr-only">Previous</span>
-    </span>
-  </button>
-  <button (click)="next()" type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
-    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
-        <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-        </svg>
-        <span class="sr-only">Next</span>
-    </span>
-  </button>
-</div>
+</section>
 
-<!-- Best Sellers Section -->
-<div class="container mx-auto px-4 mt-8">
-  <h2 class="text-2xl font-bold text-center mb-6">Productos más vendidos</h2>
-  <div *ngIf="loading()" class="text-center text-gray-600 py-6">Cargando productos...</div>
-  <div *ngIf="!loading() && error()" class="text-center text-red-600 py-6">{{ error() }}</div>
-  <div *ngIf="!loading() && !error()" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-    <a href="#" *ngFor="let product of bestSellers()" class="group relative block overflow-hidden rounded-lg border border-gray-200 shadow-md transition-all duration-300 hover:shadow-2xl hover:border-gray-400">
-      <span class="absolute top-0 left-0 m-2 rounded-full bg-violet-700 px-2 text-center text-sm font-medium text-white z-10">Más Vendido</span>
-      <div class="h-64 overflow-hidden">
-        <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
+<section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+  <div class="flex items-end justify-between gap-4 mb-8">
+    <div>
+      <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Categorías</p>
+      <h2 class="font-display text-3xl font-bold text-ink-900 mt-2">Explora por categoría</h2>
+    </div>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <a *ngFor="let cat of categories" [routerLink]="cat.route" class="group bg-white border border-line-200 rounded-2xl overflow-hidden hover:shadow-md hover:border-teal-600/30 transition-all">
+      <div class="aspect-[4/3] overflow-hidden bg-sand-50 border-b border-line-200">
+        <img [src]="cat.image" [alt]="cat.alt" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]">
       </div>
-      <div class="p-4 border-t border-gray-200">
-        <h5 class="text-xl tracking-tight text-slate-900 group-hover:text-violet-700">{{ product.name }}</h5>
-        <p class="mt-2 text-2xl font-bold text-slate-900">{{ formatCop(product.price_cop || product.price) }}</p>
+      <div class="p-5">
+        <h3 class="font-display text-xl font-bold text-ink-900">{{ cat.title }}</h3>
+        <p class="text-sm text-ink-600 mt-2">{{ cat.description }}</p>
+        <span class="inline-flex items-center gap-2 text-sm font-semibold text-teal-700 mt-4">Ver categoría <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
       </div>
     </a>
   </div>
-</div>
+</section>
+
+<section class="bg-white border-y border-line-200">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+      <div>
+        <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Productos destacados</p>
+        <h2 class="font-display text-3xl font-bold text-ink-900 mt-2">Selección del catálogo</h2>
+        <p class="text-ink-600 mt-2">Productos reales disponibles desde el backend.</p>
+      </div>
+      <a routerLink="/calzado" class="text-teal-700 font-semibold hover:text-teal-800">Ver catálogo</a>
+    </div>
+
+    <div *ngIf="loadingFeatured()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let i of [1,2,3,4]" class="bg-white rounded-2xl border border-line-200 overflow-hidden"><div class="aspect-[4/3] skeleton"></div><div class="p-4 space-y-3"><div class="h-5 skeleton w-3/4"></div><div class="h-4 skeleton w-1/2"></div><div class="h-11 skeleton"></div></div></div>
+    </div>
+    <div *ngIf="!loadingFeatured() && featuredError()" class="bg-sand-50 border border-line-200 rounded-2xl p-6 text-center">
+      <p class="text-ink-700">{{ featuredError() }}</p>
+      <button type="button" (click)="loadFeatured()" class="mt-4 min-h-11 px-5 rounded-xl bg-ink-900 text-white font-semibold">Reintentar</button>
+    </div>
+    <div *ngIf="!loadingFeatured() && !featuredError()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <app-product-card *ngFor="let product of featured()" [product]="product"></app-product-card>
+    </div>
+  </div>
+</section>
+
+<section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+  <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+    <div class="bg-ink-900 text-white rounded-3xl p-8 sm:p-10">
+      <p class="text-amber-500 font-semibold uppercase tracking-wide text-sm">Servicios</p>
+      <h2 class="font-display text-3xl font-bold mt-3">Acompañamiento más allá del producto</h2>
+      <p class="text-slate-300 mt-4 max-w-xl">Conoce servicios disponibles con información real de precio y duración cuando aplica.</p>
+      <div class="mt-6 space-y-4" *ngIf="!loadingServices() && !servicesError()">
+        <a *ngFor="let svc of services()" [routerLink]="['/servicios', svc.id]" class="block bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-colors">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-semibold text-white">{{ svc.name }}</h3>
+              <p class="text-sm text-slate-300 mt-1 line-clamp-2">{{ svc.description || 'Servicio disponible' }}</p>
+            </div>
+            <span class="text-amber-500 font-bold whitespace-nowrap">{{ formatCop(svc.price_cop) }}</span>
+          </div>
+        </a>
+      </div>
+      <div *ngIf="loadingServices()" class="mt-6 text-slate-300">Cargando servicios...</div>
+      <div *ngIf="!loadingServices() && servicesError()" class="mt-6">
+        <p class="text-slate-300">{{ servicesError() }}</p>
+        <button type="button" (click)="loadServices()" class="mt-3 min-h-11 px-4 rounded-xl bg-white text-ink-900 font-semibold">Reintentar</button>
+      </div>
+      <a routerLink="/servicios" class="inline-flex mt-6 min-h-11 px-5 rounded-xl bg-teal-600 text-white font-semibold items-center hover:bg-teal-700">Ver todos los servicios</a>
+    </div>
+
+    <div class="bg-sand-50 border border-line-200 rounded-3xl p-8 sm:p-10">
+      <p class="text-sm font-semibold text-teal-700 uppercase tracking-wide">Capacidades</p>
+      <h2 class="font-display text-3xl font-bold text-ink-900 mt-3">Una experiencia pensada para comprar con confianza</h2>
+      <div class="mt-8 space-y-5">
+        <div *ngFor="let cap of capabilities" class="flex gap-4">
+          <div class="w-11 h-11 rounded-xl bg-white border border-line-200 text-teal-700 flex items-center justify-center shrink-0"><i class="fas {{cap.icon}}" aria-hidden="true"></i></div>
+          <div>
+            <h3 class="font-semibold text-ink-900">{{ cap.title }}</h3>
+            <p class="text-sm text-ink-600 mt-1">{{ cap.text }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 rounded-2xl overflow-hidden border border-line-200">
+        <img src="assets/images/public/service-wellness.jpg" alt="Personas realizando actividad de bienestar" loading="lazy" class="w-full h-48 object-cover">
+      </div>
+    </div>
+  </div>
+</section>
