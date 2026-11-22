@@ -1,13 +1,7 @@
 export const environment = {
-
-  
-  production: true,
+  production: false,
+  apiBaseUrl: 'http://localhost:8000',
   companyName: 'Gifs',
   companyName2: 'App',
   companySlogan: 'Maneja Gifs'
-
-
-  // ApiKeys
-
-  // URLS
 };

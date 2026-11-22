@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { IndexedDbService } from '../../services/indexed-db.service'; // Import IndexedDbService
 import { Sale } from '../../../features/tienda/interfaces/sale.interface'; // Import Sale interface
@@ -14,9 +14,13 @@ import { Sale } from '../../../features/tienda/interfaces/sale.interface'; // Im
 export class AdminLayoutComponent {
   private authService = inject(AuthService);
   private indexedDbService = inject(IndexedDbService); // Inject IndexedDbService
+  private router = inject(Router);
 
   logout(): void {
-    this.authService.logoutAdmin();
+    this.authService.logoutAdmin().subscribe({
+      next: () => this.router.navigate(['/admin/login']),
+      error: () => this.router.navigate(['/admin/login']),
+    });
   }
 
   async exportSalesToCsv(): Promise<void> {

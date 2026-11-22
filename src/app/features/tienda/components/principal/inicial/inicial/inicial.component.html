@@ -39,15 +39,17 @@
 <!-- Best Sellers Section -->
 <div class="container mx-auto px-4 mt-8">
   <h2 class="text-2xl font-bold text-center mb-6">Productos más vendidos</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-    <a href="#" *ngFor="let product of bestSellers" class="group relative block overflow-hidden rounded-lg border border-gray-200 shadow-md transition-all duration-300 hover:shadow-2xl hover:border-gray-400">
+  <div *ngIf="loading()" class="text-center text-gray-600 py-6">Cargando productos...</div>
+  <div *ngIf="!loading() && error()" class="text-center text-red-600 py-6">{{ error() }}</div>
+  <div *ngIf="!loading() && !error()" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <a href="#" *ngFor="let product of bestSellers()" class="group relative block overflow-hidden rounded-lg border border-gray-200 shadow-md transition-all duration-300 hover:shadow-2xl hover:border-gray-400">
       <span class="absolute top-0 left-0 m-2 rounded-full bg-violet-700 px-2 text-center text-sm font-medium text-white z-10">Más Vendido</span>
       <div class="h-64 overflow-hidden">
         <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110">
       </div>
       <div class="p-4 border-t border-gray-200">
         <h5 class="text-xl tracking-tight text-slate-900 group-hover:text-violet-700">{{ product.name }}</h5>
-        <p class="mt-2 text-2xl font-bold text-slate-900">${{ product.price.toFixed(2) }}</p>
+        <p class="mt-2 text-2xl font-bold text-slate-900">{{ formatCop(product.price_cop || product.price) }}</p>
       </div>
     </a>
   </div>

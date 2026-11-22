@@ -1,5 +1,5 @@
-export interface SaleItem {
-  productId: number;
+﻿export interface SaleItem {
+  productId: string | number;
   name: string;
   price: number;
   quantity: number;

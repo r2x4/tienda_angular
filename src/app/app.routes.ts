@@ -1,10 +1,7 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/components/main-layout/main-layout.component';
 import { AdminLayoutComponent } from './core/components/admin-layout/admin-layout';
-import { inject } from '@angular/core';
-import { AuthService } from './core/services/auth.service';
-import { toObservable } from '@angular/core/rxjs-interop'; // New import
-import { take } from 'rxjs/operators'; // New import
+import { adminGuard } from './core/auth/guards/auth.guards';
 
 export const routes: Routes = [
   {
@@ -15,7 +12,7 @@ export const routes: Routes = [
   {
     path: 'admin', // Parent route for admin section
     component: AdminLayoutComponent, // Use the new admin layout
-    canActivate: [() => toObservable(inject(AuthService).isAdminAuthenticated).pipe(take(1))], // Protect admin routes
+    canActivate: [adminGuard], // Protect admin routes by real backend ADMIN role
     children: [
       {
         path: 'services',

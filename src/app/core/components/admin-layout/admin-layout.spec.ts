@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { AdminLayoutComponent } from './admin-layout';
 import { AuthService } from '../../services/auth.service';
 import { IndexedDbService } from '../../services/indexed-db.service';
@@ -12,6 +13,7 @@ describe('AdminLayoutComponent', () => {
 
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj<AuthService>('AuthService', ['logoutAdmin']);
+    authServiceSpy.logoutAdmin.and.returnValue(of(void 0));
     indexedDbServiceSpy = jasmine.createSpyObj<IndexedDbService>('IndexedDbService', [
       'getSales',
       'getProducts',
@@ -37,7 +39,7 @@ describe('AdminLayoutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call logoutAdmin when logout is invoked', () => {
+  it('should call logoutAdmin on logout', () => {
     component.logout();
     expect(authServiceSpy.logoutAdmin).toHaveBeenCalled();
   });

@@ -98,8 +98,12 @@ def refresh(payload: RefreshRequest, request: Request, db: Session = Depends(get
     try:
         _, access_token, refresh_token = rotate_refresh_token(db, payload.refresh_token)
     except Exception:
+        if db.in_transaction():
+            db.rollback()
         log_security_event("auth.refresh", outcome="failure", ip=ip)
         raise
+    if db.in_transaction():
+        db.commit()
     log_security_event("auth.refresh", outcome="success", ip=ip)
     return AccessTokenResponse(access_token=access_token, refresh_token=refresh_token)
 
@@ -122,7 +126,14 @@ def change_password_endpoint(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> MessageResponse:
-    change_password(db, current_user, payload)
+    try:
+        change_password(db, current_user, payload)
+    except Exception:
+        if db.in_transaction():
+            db.rollback()
+        raise
+    if db.in_transaction():
+        db.commit()
     ip = request.client.host if request.client else "unknown"
     log_security_event("auth.change_password", outcome="success", ip=ip, user_id=str(current_user.id))
     return MessageResponse(message="Password changed")

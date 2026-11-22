@@ -1,4 +1,4 @@
-import { Component, Input, inject, computed } from '@angular/core';
+﻿import { Component, Input, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UserAuthModalComponent } from '../../../../auth/user-auth-modal/user-auth-modal.component';

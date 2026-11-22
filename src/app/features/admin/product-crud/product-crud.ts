@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IndexedDbService } from '../../../core/services/indexed-db.service';
@@ -38,7 +38,7 @@ export class ProductCrudComponent implements OnInit {
   private prepareProduct(productForm: ProductForm): Product {
     const colors = productForm.colorsString?.split(',').map(s => s.trim()).filter(s => s) || [];
     // Create a new object that matches the Product interface, excluding temporary form fields.
-    const product: Omit<Product, 'id'> & { id?: number } = {
+    const product: any = {
       id: productForm.id,
       name: productForm.name!,
       price: productForm.price!,
@@ -77,9 +77,9 @@ export class ProductCrudComponent implements OnInit {
     }
   }
 
-  async deleteProduct(id: number | undefined): Promise<void> {
+  async deleteProduct(id: string | number | undefined): Promise<void> {
     if (id) {
-      await this.indexedDbService.deleteProduct(id);
+      await this.indexedDbService.deleteProduct(id as any);
       this.loadProducts();
     }
   }

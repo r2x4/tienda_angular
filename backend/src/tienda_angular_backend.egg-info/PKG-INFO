@@ -1,0 +1,107 @@
+Metadata-Version: 2.4
+Name: tienda-angular-backend
+Version: 0.1.0
+Summary: Backend API for tienda_angular
+Requires-Python: <3.13,>=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1.0.0,>=0.115.0
+Requires-Dist: uvicorn[standard]<1.0.0,>=0.30.0
+Requires-Dist: sqlalchemy<2.1.0,>=2.0.36
+Requires-Dist: psycopg[binary]<3.3.0,>=3.2.3
+Requires-Dist: alembic<2.0.0,>=1.14.0
+Requires-Dist: pydantic<3.0.0,>=2.10.0
+Requires-Dist: pydantic-settings<3.0.0,>=2.6.0
+Requires-Dist: python-dotenv<2.0.0,>=1.0.1
+Requires-Dist: PyJWT<3.0.0,>=2.9.0
+Requires-Dist: passlib<2.0.0,>=1.7.4
+Requires-Dist: argon2-cffi<24.0.0,>=23.1.0
+Requires-Dist: email-validator<3.0.0,>=2.2.0
+Provides-Extra: dev
+Requires-Dist: pytest<9.0.0,>=8.3.0; extra == "dev"
+Requires-Dist: pytest-asyncio<1.0.0,>=0.24.0; extra == "dev"
+Requires-Dist: httpx<1.0.0,>=0.27.0; extra == "dev"
+
+# Backend - tienda_angular
+
+Fundaciones iniciales del backend (FastAPI + PostgreSQL + SQLAlchemy + Alembic).
+
+## Servicios Docker
+
+- `api`: FastAPI en `http://localhost:8000`
+- `db`: PostgreSQL 16 en `localhost:5432`
+
+## Variables de entorno
+
+Copiar `backend/.env.example` a `backend/.env` y ajustar valores si es necesario.
+
+## Iniciar entorno
+
+Desde la raíz del proyecto:
+
+```powershell
+docker compose -f backend/docker-compose.yml --env-file backend/.env.example up --build -d
+```
+
+O si ya creó `backend/.env`:
+
+```powershell
+docker compose -f backend/docker-compose.yml --env-file backend/.env up --build -d
+```
+
+## Ver estado
+
+```powershell
+docker compose -f backend/docker-compose.yml ps
+```
+
+## Logs
+
+```powershell
+docker compose -f backend/docker-compose.yml logs -f api
+docker compose -f backend/docker-compose.yml logs -f db
+```
+
+## Probar health
+
+```powershell
+curl http://localhost:8000/health
+```
+
+## Detener entorno
+
+```powershell
+docker compose -f backend/docker-compose.yml down
+```
+
+Detener y eliminar volumen de datos (destructivo):
+
+```powershell
+docker compose -f backend/docker-compose.yml down -v
+```
+
+## Alembic / Migraciones
+
+Comandos ejecutados desde la raíz del repo. La API/DB deben estar corriendo en Docker.
+
+```powershell
+# Estado actual de migraciones en la DB
+docker compose -f backend/docker-compose.yml exec api alembic current
+
+# Historial de migraciones
+docker compose -f backend/docker-compose.yml exec api alembic history
+
+# Verificar autogeneración (no aplica cambios; revisa si detecta diffs)
+docker compose -f backend/docker-compose.yml exec api alembic revision --autogenerate -m "check" --rev-id check
+
+# Aplicar migraciones (cuando existan)
+docker compose -f backend/docker-compose.yml exec api alembic upgrade head
+
+# Revertir última migración
+docker compose -f backend/docker-compose.yml exec api alembic downgrade -1
+```
+
+## Pruebas backend
+
+```powershell
+docker compose -f backend/docker-compose.yml exec api pytest -q
+```
