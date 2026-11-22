@@ -37,9 +37,7 @@ def get_user_roles(user: User) -> list[str]:
     return [role.code for role in user.roles]
 
 
-def create_tokens_for_user(db: Session, user: User) -> tuple[str, str]:
-    roles = get_user_roles(user)
-    access_token = create_access_token(subject=str(user.id), roles=roles)
+def _issue_refresh_token(db: Session, user: User) -> str:
     raw_refresh = generate_refresh_token()
     rt = RefreshToken(
         user_id=user.id,
@@ -47,6 +45,14 @@ def create_tokens_for_user(db: Session, user: User) -> tuple[str, str]:
         expires_at=refresh_token_expiry(settings.refresh_token_expire_days),
     )
     db.add(rt)
+    db.flush()
+    return raw_refresh
+
+
+def create_tokens_for_user(db: Session, user: User) -> tuple[str, str]:
+    roles = get_user_roles(user)
+    access_token = create_access_token(subject=str(user.id), roles=roles, token_version=int(getattr(user, "token_version", 1)))
+    raw_refresh = _issue_refresh_token(db, user)
     db.commit()
     return access_token, raw_refresh
 
@@ -90,21 +96,27 @@ def authenticate_user(db: Session, payload: LoginRequest) -> User:
 
 def rotate_refresh_token(db: Session, raw_refresh_token: str) -> tuple[User, str, str]:
     token_hash = hash_refresh_token(raw_refresh_token)
-    token = db.execute(select(RefreshToken).where(RefreshToken.token_hash == token_hash)).scalar_one_or_none()
-    if not token or token.revoked_at is not None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
-    if token.expires_at <= datetime.now(timezone.utc):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired refresh token")
+    with db.begin_nested() if db.in_transaction() else db.begin():
+        token = db.execute(
+            select(RefreshToken).where(RefreshToken.token_hash == token_hash).with_for_update()
+        ).scalar_one_or_none()
+        if not token or token.revoked_at is not None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+        if token.expires_at <= datetime.now(timezone.utc):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired refresh token")
 
-    user = db.execute(select(User).where(User.id == token.user_id)).scalar_one_or_none()
-    if not user or not user.is_active:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found or inactive")
+        user = db.execute(select(User).where(User.id == token.user_id)).scalar_one_or_none()
+        if not user or not user.is_active:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found or inactive")
 
-    token.revoked_at = datetime.now(timezone.utc)
-    db.add(token)
-    db.commit()
-
-    access_token, new_refresh = create_tokens_for_user(db, user)
+        token.revoked_at = datetime.now(timezone.utc)
+        db.add(token)
+        roles = get_user_roles(user)
+        access_token = create_access_token(
+            subject=str(user.id), roles=roles, token_version=int(getattr(user, "token_version", 1))
+        )
+        new_refresh = _issue_refresh_token(db, user)
+        db.flush()
     return user, access_token, new_refresh
 
 
@@ -125,17 +137,22 @@ def change_password(db: Session, user: User, payload: ChangePasswordRequest) -> 
     if payload.current_password == payload.new_password:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="New password must be different")
 
-    user.password_hash = hash_password(payload.new_password)
-    db.add(user)
+    with db.begin_nested() if db.in_transaction() else db.begin():
+        db_user = db.execute(select(User).where(User.id == user.id).with_for_update()).scalar_one()
+        db_user.password_hash = hash_password(payload.new_password)
+        db_user.token_version = int(getattr(db_user, "token_version", 1)) + 1
+        db.add(db_user)
 
-    active_tokens = db.execute(
-        select(RefreshToken).where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None))
-    ).scalars().all()
-    for token in active_tokens:
-        token.revoked_at = datetime.now(timezone.utc)
-        db.add(token)
-
-    db.commit()
+        active_tokens = db.execute(
+            select(RefreshToken)
+            .where(RefreshToken.user_id == db_user.id, RefreshToken.revoked_at.is_(None))
+            .with_for_update()
+        ).scalars().all()
+        now = datetime.now(timezone.utc)
+        for token in active_tokens:
+            token.revoked_at = now
+            db.add(token)
+        db.flush()
 
 
 # -------------------------
@@ -185,10 +202,24 @@ def _get_user_for_admin(db: Session, user_id: UUID, *, for_update: bool = False)
     return user
 
 
-def _revalidate_actor(db: Session, actor_user_id: UUID) -> User:
-    actor = db.execute(
-        select(User).options(selectinload(User.roles)).where(User.id == actor_user_id).with_for_update()
-    ).scalar_one_or_none()
+def _lock_users_for_admin_operation(db: Session, user_ids: list[UUID]) -> dict[UUID, User]:
+    """Acquire user row locks in deterministic UUID order to avoid deadlocks."""
+    ordered_ids = sorted(set(user_ids), key=lambda uid: str(uid))
+    locked: dict[UUID, User] = {}
+    for user_id in ordered_ids:
+        locked[user_id] = _get_user_for_admin(db, user_id, for_update=True)
+    return locked
+
+
+def _revalidate_actor(db: Session, actor_user_id: UUID, *, locked_users: dict[UUID, User] | None = None) -> User:
+    """Revalidate actor after required locks are held.
+
+    Caller must ensure ADMIN membership synchronization is in place when ADMIN-role changes
+    can race (lock the ADMIN role row before this check in those operations).
+    """
+    actor = (locked_users or {}).get(actor_user_id)
+    if actor is None:
+        actor = db.execute(select(User).options(selectinload(User.roles)).where(User.id == actor_user_id).with_for_update()).scalar_one_or_none()
     if not actor or not actor.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Actor is not active")
     if ROLE_ADMIN not in {r.code for r in actor.roles}:
@@ -246,90 +277,100 @@ def list_roles(db: Session) -> list[Role]:
 
 
 def activate_user(db: Session, *, actor_user_id: UUID, user_id: UUID) -> User:
-    try:
-        with db.begin_nested() if db.in_transaction() else db.begin():
-            _revalidate_actor(db, actor_user_id)
-            user = _get_user_for_admin(db, user_id, for_update=True)
-            if not user.is_active:
-                user.is_active = True
-                db.add(user)
-            db.flush()
-            result = _get_user_for_admin(db, user_id, for_update=False)
-        db.commit()
-        return result
-    except Exception:
-        db.rollback()
-        raise
+    def _op() -> User:
+        locked_users = _lock_users_for_admin_operation(db, [actor_user_id, user_id])
+        admin_role = _lock_admin_role(db)
+        _revalidate_actor(db, actor_user_id, locked_users=locked_users)
+        # admin_role lock held as synchronization barrier for actor ADMIN membership checks.
+        _ = admin_role
+        user = locked_users[user_id]
+        if not user.is_active:
+            user.is_active = True
+            db.add(user)
+        db.flush()
+        return _get_user_for_admin(db, user_id, for_update=False)
+
+    if db.in_transaction():
+        with db.begin_nested():
+            return _op()
+    with db.begin():
+        return _op()
 
 
 def deactivate_user(db: Session, *, actor_user_id: UUID, user_id: UUID) -> User:
-    try:
-        with db.begin_nested() if db.in_transaction() else db.begin():
-            _revalidate_actor(db, actor_user_id)
-            if actor_user_id == user_id:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot deactivate your own account")
+    def _op() -> User:
+        locked_users = _lock_users_for_admin_operation(db, [actor_user_id, user_id])
+        actor = _revalidate_actor(db, actor_user_id, locked_users=locked_users)
+        if actor_user_id == user_id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot deactivate your own account")
 
-            user = _get_user_for_admin(db, user_id, for_update=True)
-            if user.is_active:
-                user_codes = {r.code for r in user.roles}
-                if ROLE_ADMIN in user_codes:
-                    admin_role = _lock_admin_role(db)
-                    active_admins = _count_active_admins(db, admin_role.id)
-                    if active_admins <= 1:
-                        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Cannot deactivate the last active administrator")
+        user = locked_users[user_id]
+        if user.is_active:
+            user_codes = {r.code for r in user.roles}
+            admin_role = _lock_admin_role(db)
+            # Revalidate actor after ADMIN-role synchronization lock.
+            _revalidate_actor(db, actor_user_id, locked_users=locked_users)
+            if ROLE_ADMIN in user_codes:
+                active_admins = _count_active_admins(db, admin_role.id)
+                if active_admins <= 1:
+                    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Cannot deactivate the last active administrator")
 
-                user.is_active = False
-                db.add(user)
+            user.is_active = False
+            user.token_version = int(getattr(user, "token_version", 1)) + 1
+            db.add(user)
 
-                now = datetime.now(timezone.utc)
-                active_tokens = db.execute(
-                    select(RefreshToken).where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None)).with_for_update()
-                ).scalars().all()
-                for token in active_tokens:
-                    token.revoked_at = now
-                    db.add(token)
+            now = datetime.now(timezone.utc)
+            active_tokens = db.execute(
+                select(RefreshToken).where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None)).with_for_update()
+            ).scalars().all()
+            for token in active_tokens:
+                token.revoked_at = now
+                db.add(token)
 
-            db.flush()
-            result = _get_user_for_admin(db, user_id, for_update=False)
-        db.commit()
-        return result
-    except Exception:
-        db.rollback()
-        raise
+        db.flush()
+        return _get_user_for_admin(db, user_id, for_update=False)
+
+    if db.in_transaction():
+        with db.begin_nested():
+            return _op()
+    with db.begin():
+        return _op()
 
 
 def replace_user_roles(db: Session, *, actor_user_id: UUID, user_id: UUID, role_codes: list[str]) -> User:
     normalized_codes = _normalize_role_codes(role_codes)
-    try:
-        with db.begin_nested() if db.in_transaction() else db.begin():
-            _revalidate_actor(db, actor_user_id)
-            target = _get_user_for_admin(db, user_id, for_update=True)
 
-            roles = list(db.execute(select(Role).where(Role.code.in_(normalized_codes))).scalars().all())
-            roles_by_code = {r.code: r for r in roles}
-            missing = [code for code in normalized_codes if code not in roles_by_code]
-            if missing:
-                raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Unknown role codes: {', '.join(missing)}")
+    def _op() -> User:
+        locked_users = _lock_users_for_admin_operation(db, [actor_user_id, user_id])
+        admin_role = _lock_admin_role(db)
+        _revalidate_actor(db, actor_user_id, locked_users=locked_users)
+        target = locked_users[user_id]
 
-            current_codes = {r.code for r in target.roles}
-            requested_codes = set(normalized_codes)
+        roles = list(db.execute(select(Role).where(Role.code.in_(normalized_codes))).scalars().all())
+        roles_by_code = {r.code: r for r in roles}
+        missing = [code for code in normalized_codes if code not in roles_by_code]
+        if missing:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Unknown role codes: {', '.join(missing)}")
 
-            if actor_user_id == user_id and ROLE_ADMIN in current_codes and ROLE_ADMIN not in requested_codes:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot remove your own ADMIN role")
+        current_codes = {r.code for r in target.roles}
+        requested_codes = set(normalized_codes)
 
-            if target.is_active and ROLE_ADMIN in current_codes and ROLE_ADMIN not in requested_codes:
-                admin_role = _lock_admin_role(db)
-                active_admins = _count_active_admins(db, admin_role.id)
-                if active_admins <= 1:
-                    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Cannot remove ADMIN role from the last active administrator")
+        if actor_user_id == user_id and ROLE_ADMIN in current_codes and ROLE_ADMIN not in requested_codes:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot remove your own ADMIN role")
 
-            # Replace associations atomically in-transaction
-            target.roles = [roles_by_code[code] for code in normalized_codes]
-            db.add(target)
-            db.flush()
-            result = _get_user_for_admin(db, user_id, for_update=False)
-        db.commit()
-        return result
-    except Exception:
-        db.rollback()
-        raise
+        if target.is_active and ROLE_ADMIN in current_codes and ROLE_ADMIN not in requested_codes:
+            active_admins = _count_active_admins(db, admin_role.id)
+            if active_admins <= 1:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Cannot remove ADMIN role from the last active administrator")
+
+        # Replace associations atomically in-transaction
+        target.roles = [roles_by_code[code] for code in normalized_codes]
+        db.add(target)
+        db.flush()
+        return _get_user_for_admin(db, user_id, for_update=False)
+
+    if db.in_transaction():
+        with db.begin_nested():
+            return _op()
+    with db.begin():
+        return _op()

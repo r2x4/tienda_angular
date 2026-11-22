@@ -1,12 +1,14 @@
 ﻿import logging
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.core.config import settings
+from app.core.config import settings, validate_runtime_security
 from app.core.logging import configure_logging
 from app.db.session import SessionLocal
+from app.modules.auth.router import admin_users_router as auth_admin_users_router
 from app.modules.auth.router import router as auth_router
 from app.modules.cart.router import router as cart_router
 from app.modules.catalog.router import admin_router as catalog_admin_router
@@ -31,7 +33,20 @@ def check_database_connection() -> tuple[bool, str | None]:
 
 def create_app() -> FastAPI:
     configure_logging(settings.log_level)
+    validate_runtime_security(settings)
+
     app = FastAPI(title=settings.app_name, version="0.1.0")
+
+    cors_origins = settings.cors_origins_list()
+    cors_methods = [m.strip().upper() for m in settings.cors_allowed_methods.split(",") if m.strip()]
+    cors_headers = [h.strip() for h in settings.cors_allowed_headers.split(",") if h.strip()]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins,
+        allow_credentials=settings.cors_allow_credentials,
+        allow_methods=cors_methods,
+        allow_headers=cors_headers,
+    )
 
     @app.get("/health", tags=["health"])
     def health() -> dict[str, str]:
@@ -48,6 +63,7 @@ def create_app() -> FastAPI:
         return response
 
     app.include_router(auth_router)
+    app.include_router(auth_admin_users_router)
     app.include_router(catalog_public_router)
     app.include_router(catalog_admin_router)
     app.include_router(services_public_router)

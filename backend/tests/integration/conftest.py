@@ -15,7 +15,7 @@ from app.modules.auth.models import Role, User
 from app.modules.auth.service import ROLE_ADMIN, ROLE_CUSTOMER
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def setup_test_database():
     test_db_name = f"tienda_test_{uuid.uuid4().hex[:8]}"
     admin_url = (
