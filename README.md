@@ -1,4 +1,4 @@
-# Spor-Five 🛒  
+# Sport Five 🛒  
 
 [![Angular](https://img.shields.io/badge/Angular-20.2-red?logo=angular&logoColor=white)](https://angular.dev/)  
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)  
