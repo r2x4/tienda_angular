@@ -74,6 +74,14 @@ describe('CartPageComponent', () => {
     expect(cartServiceMock.clearCart).toHaveBeenCalled();
   });
 
+  it('scrolls to checkout section without changing route/navigation logic', () => {
+    const scrollIntoView = jasmine.createSpy('scrollIntoView');
+    spyOn(document, 'getElementById').and.callFake((id: string) => id === 'checkout' ? ({ scrollIntoView } as any) : null);
+    component.scrollToCheckout();
+    expect(document.getElementById).toHaveBeenCalledWith('checkout');
+    expect(scrollIntoView).toHaveBeenCalledWith(jasmine.objectContaining({ behavior: 'smooth', block: 'start' }));
+  });
+
   it('shows loading and error states', () => {
     cartServiceMock.loading.set(true);
     fixture.detectChanges();
@@ -91,12 +99,61 @@ describe('CartPageComponent', () => {
     expect(cartServiceMock.checkout).not.toHaveBeenCalled();
   });
 
-  it('confirms checkout and shows confirmation', () => {
+  it('confirms guest checkout, shows token, and allows copying it', async () => {
+    const token = 'guest-access-token-1234567890';
     cartServiceMock.cartItems.set([item]);
+    cartServiceMock.checkout.and.returnValue(of({
+      order: { id: '1', order_number: 'ORD-1', status: 'created', total: '1000', currency: 'COP', subtotal: '1000', created_at: '', user_id: null, items: [] },
+      guest_order_access_token: token
+    }));
+    const writeText = jasmine.createSpy('writeText').and.resolveTo();
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+
     component.buyer = { full_name: 'A', email: 'a@a.com', phone: '', address: 'Dir' };
     component.checkout();
-    expect(cartServiceMock.checkout).toHaveBeenCalled();
+    fixture.detectChanges();
+
     expect(component.checkoutSuccess()?.order_number).toBe('ORD-1');
+    expect(component.guestCheckoutAccessToken()).toBe(token);
+    expect(fixture.nativeElement.textContent).toContain(token);
+    expect(fixture.nativeElement.textContent).toContain('Copiar token');
+    expect(fixture.nativeElement.textContent).toContain('Este token es privado, permite consultar tu pedido y debes guardarlo en un lugar seguro.');
+
+    await component.copyGuestCheckoutToken();
+    expect(writeText).toHaveBeenCalledWith(token);
+    expect(component.guestTokenCopied()).toBeTrue();
+  });
+
+  it('does not show guest token for authenticated checkout', () => {
+    authMock.isAuthenticated.and.returnValue(true);
+    cartServiceMock.cartItems.set([item]);
+    cartServiceMock.checkout.and.returnValue(of({
+      order: { id: '1', order_number: 'ORD-1', status: 'created', total: '1000', currency: 'COP', subtotal: '1000', created_at: '', user_id: 'u1', items: [] },
+      guest_order_access_token: 'guest-access-token-1234567890'
+    }));
+
+    component.buyer = { full_name: 'A', email: 'a@a.com', phone: '', address: 'Dir' };
+    component.checkout();
+    fixture.detectChanges();
+
+    expect(component.guestCheckoutAccessToken()).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('Token de acceso de invitado');
+    expect(fixture.nativeElement.textContent).not.toContain('Copiar token');
+  });
+
+  it('shows informational message when guest token is unavailable', () => {
+    cartServiceMock.cartItems.set([item]);
+    cartServiceMock.checkout.and.returnValue(of({
+      order: { id: '1', order_number: 'ORD-1', status: 'created', total: '1000', currency: 'COP', subtotal: '1000', created_at: '', user_id: null, items: [] }
+    }));
+
+    component.buyer = { full_name: 'A', email: 'a@a.com', phone: '', address: 'Dir' };
+    component.checkout();
+    fixture.detectChanges();
+
+    expect(component.guestCheckoutAccessToken()).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('El token de acceso no está disponible en esta confirmación.');
+    expect(fixture.nativeElement.textContent).not.toContain('Copiar token');
   });
 
   it('looks up guest order', () => {

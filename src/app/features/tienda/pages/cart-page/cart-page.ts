@@ -32,6 +32,8 @@ export class CartPageComponent {
   checkoutLoading = signal(false);
   checkoutError = signal('');
   checkoutSuccess = signal<OrderRead | null>(null);
+  guestCheckoutAccessToken = signal<string | null>(null);
+  guestTokenCopied = signal(false);
   guestOrderLookupId = signal('');
   guestOrderLookupToken = signal('');
   guestLookupLoading = signal(false);
@@ -60,9 +62,18 @@ export class CartPageComponent {
 
   clearCart(): void { this.cartService.clearCart().subscribe({ error: () => undefined }); }
 
+  scrollToCheckout(): void {
+    const el = document.getElementById('checkout');
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   checkout(): void {
     this.checkoutError.set('');
     this.checkoutSuccess.set(null);
+    this.guestCheckoutAccessToken.set(null);
+    this.guestTokenCopied.set(false);
     if (this.cartItems().length === 0) { this.checkoutError.set('Tu carrito está vacío.'); return; }
     if (!this.buyer.full_name?.trim() || !this.buyer.email?.trim() || !this.buyer.address?.trim()) {
       this.checkoutError.set('Completa nombre, email y dirección para continuar.');
@@ -76,12 +87,40 @@ export class CartPageComponent {
       .subscribe({
         next: (res) => {
           this.checkoutSuccess.set(res.order);
+          const guestToken = !this.auth.isAuthenticated() ? (res.guest_order_access_token ?? null) : null;
+          this.guestCheckoutAccessToken.set(guestToken);
+          this.guestTokenCopied.set(false);
           if (res.guest_order_access_token) this.guestOrderLookupToken.set(res.guest_order_access_token);
           this.guestOrderLookupId.set(res.order.id);
           if (this.auth.isAuthenticated()) this.loadMyOrders();
         },
         error: (err) => this.checkoutError.set(normalizeApiError(err, 'No se pudo completar la compra.').message)
       });
+  }
+
+  async copyGuestCheckoutToken(): Promise<void> {
+    const token = this.guestCheckoutAccessToken();
+    if (!token) return;
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(token);
+      } else if (typeof document !== 'undefined') {
+        const textArea = document.createElement('textarea');
+        textArea.value = token;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      } else {
+        return;
+      }
+      this.guestTokenCopied.set(true);
+    } catch {
+      this.guestTokenCopied.set(false);
+    }
   }
 
   loadMyOrders(): void {

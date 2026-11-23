@@ -103,7 +103,7 @@
               </div>
             </div>
             <div class="mt-6 space-y-3">
-              <a href="#checkout" class="w-full min-h-11 inline-flex items-center justify-center rounded-xl bg-teal-600 text-white font-semibold hover:bg-teal-700">Continuar al checkout</a>
+              <button type="button" (click)="scrollToCheckout()" class="w-full min-h-11 inline-flex items-center justify-center rounded-xl bg-teal-600 text-white font-semibold hover:bg-teal-700">Continuar al checkout</button>
               <button type="button" (click)="clearCart()" class="w-full min-h-11 rounded-xl border border-line-200 text-ink-900 font-semibold hover:bg-sand-50 disabled:opacity-50" [disabled]="loading()">Vaciar carrito</button>
             </div>
             <p class="text-xs text-ink-600 mt-4">El inventario y la transacción son controlados por el backend. Checkout simulado sin pasarela real.</p>
@@ -151,7 +151,25 @@
           <div><dt class="text-ink-600">Estado</dt><dd class="font-semibold text-ink-900">{{ order.status }}</dd></div>
           <div><dt class="text-ink-600">Total</dt><dd class="font-semibold text-ink-900">{{ formatCop(order.total) }}</dd></div>
         </dl>
-        <p *ngIf="!auth.isAuthenticated()" class="text-sm text-ink-600 mt-4">Guarda el ID y token de acceso para consultar tu pedido de invitado.</p>
+
+        <div *ngIf="!auth.isAuthenticated()" class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <p class="text-sm font-semibold text-ink-900">Token de acceso de invitado</p>
+          <p class="text-sm text-ink-700 mt-1">Este token es privado, permite consultar tu pedido y debes guardarlo en un lugar seguro. No lo compartas.</p>
+
+          <ng-container *ngIf="guestCheckoutAccessToken() as guestToken; else guestTokenUnavailable">
+            <div class="mt-3 flex flex-col sm:flex-row gap-3 sm:items-start">
+              <code class="block flex-1 min-w-0 px-3 py-2 rounded-lg bg-white border border-line-200 text-xs sm:text-sm text-ink-900 break-all select-all">{{ guestToken }}</code>
+              <button type="button" (click)="copyGuestCheckoutToken()" class="min-h-11 px-4 rounded-xl border border-line-200 bg-white text-ink-900 font-semibold hover:bg-sand-50 shrink-0">
+                {{ guestTokenCopied() ? 'Token copiado' : 'Copiar token' }}
+              </button>
+            </div>
+            <p *ngIf="guestTokenCopied()" class="text-xs text-success-600 mt-2 font-medium" aria-live="polite">Token copiado al portapapeles.</p>
+          </ng-container>
+
+          <ng-template #guestTokenUnavailable>
+            <p class="text-sm text-ink-700 mt-3">El token de acceso no está disponible en esta confirmación. Si ya lo guardaste, úsalo junto con el ID para consultar tu pedido.</p>
+          </ng-template>
+        </div>
       </div>
     </div>
 
